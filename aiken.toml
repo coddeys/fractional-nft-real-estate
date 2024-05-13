@@ -1,11 +1,11 @@
-name = "coddeys/franctional-nft-real-estate"
+name = "coddeys/fractional-nft-real-estate"
 version = "0.0.0"
 license = "Apache-2.0"
-description = "Aiken contracts for project 'coddeys/franctional-nft-real-estate'"
+description = "Aiken contracts for project 'coddeys/fractional-nft-real-estate'"
 
 [repository]
 user = "coddeys"
-project = "franctional-nft-real-estate"
+project = "fractional-nft-real-estate"
 platform = "github"
 
 [[dependencies]]
