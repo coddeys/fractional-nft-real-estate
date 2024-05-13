@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: aiken-lang/setup-aiken@v0.1.0
+      - uses: coddeys/setup-aiken@0f28d2e4b3873eada8a88ef98dcfc076ec2a2cbe
         with:
           version: v1.0.26-alpha
 
