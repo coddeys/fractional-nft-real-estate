@@ -1,22 +1,29 @@
-import { useSignal } from "@preact/signals";
+import { Header } from "../components/Header.tsx";
+import { env } from "../config.ts";
 
 export default function Home() {
-  const count = useSignal(3);
+  const blockfrost = env["BLOCKFROST"] || Deno.env.get("BLOCKFROST");
+
   return (
-    <div class="px-4 py-8 mx-auto bg-[#86efac]">
-      <div class="max-w-screen-md mx-auto flex flex-col items-center justify-center">
-        <img
-          class="my-6"
-          src="/logo.svg"
-          width="128"
-          height="128"
-          alt="the Fresh logo: a sliced lemon dripping with juice"
-        />
-        <h1 class="text-4xl font-bold">Welcome to Fresh</h1>
-        <p class="my-4">
-          Try updating this message in the
-          <code class="mx-2">./routes/index.tsx</code> file, and refresh.
-        </p>
+    <div>
+      <Header blockfrost={blockfrost} />
+      <Hero />
+    </div>
+  );
+}
+
+function Hero() {
+  return (
+    <div className="hero h-[calc(100vh-68px)] bg-base-200">
+      <div className="hero-content text-center">
+        <div className="max-w-md">
+          <h1 className="text-5xl font-bold">Estate Club</h1>
+          <p className="py-6">
+            Take part in the EU real estate market by investing in fractional,
+            tokenized ownership, powered by Cardano.
+          </p>
+          <button className="btn btn-primary">Get Started</button>
+        </div>
       </div>
     </div>
   );

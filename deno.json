@@ -29,7 +29,10 @@
     "tailwindcss": "npm:tailwindcss@3.4.1",
     "tailwindcss/": "npm:/tailwindcss@3.4.1/",
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
-    "$std/": "https://deno.land/std@0.216.0/"
+    "tailwindcss/typography": "npm:@tailwindcss/typography",
+    "daisyui": "npm:daisyui@4.11.1",
+    "$std/": "https://deno.land/std@0.216.0/",
+    "lucid-cardano": "https://deno.land/x/lucid@0.10.7/mod.ts"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
