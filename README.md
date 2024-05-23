@@ -10,6 +10,8 @@
 
 3. Click the Mint button
 
+[platform_nft.webm](https://github.com/coddeys/fractional-nft-real-estate/assets/4198294/b360f8d5-7c6c-4614-a221-fa29d70addb8)
+
 
 ## Development
 
