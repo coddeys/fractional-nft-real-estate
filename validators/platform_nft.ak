@@ -32,7 +32,6 @@ validator(token_name: ByteArray, utxo_ref: OutputReference) {
     }
   }
 }
-
 // validator(token_name: ByteArray, policy_id: ByteArray) {
 //   fn redeem(_d: Data, _r: Data, ctx: ScriptContext) -> Bool {
 //     let ScriptContext { transaction, .. } = ctx

@@ -35,7 +35,7 @@ export default function Home({ data }: PageProps<Data>) {
               <div className="">
                 <pre class="whitespace-pre-wrap break-words">{validators.platformNFT.script}</pre>
               </div>
-              <PlatformMint blockfrost={blockfrost} />
+              <PlatformMint blockfrost={blockfrost} validators={validators} />
             </div>
           </div>
         </div>
