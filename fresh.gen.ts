@@ -7,7 +7,9 @@ import * as $_app from "./routes/_app.tsx";
 import * as $admin_index from "./routes/admin/index.tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
+import * as $manager_index from "./routes/manager/index.tsx";
 import * as $Connect from "./islands/Connect.tsx";
+import * as $ManagerMint from "./islands/ManagerMint.tsx";
 import * as $PlatformMint from "./islands/PlatformMint.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
@@ -18,9 +20,11 @@ const manifest = {
     "./routes/admin/index.tsx": $admin_index,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
+    "./routes/manager/index.tsx": $manager_index,
   },
   islands: {
     "./islands/Connect.tsx": $Connect,
+    "./islands/ManagerMint.tsx": $ManagerMint,
     "./islands/PlatformMint.tsx": $PlatformMint,
   },
   baseUrl: import.meta.url,

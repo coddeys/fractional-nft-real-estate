@@ -28,8 +28,15 @@ export function Header(props: { blockfrost: string }) {
           Estate Club
         </a>
       </div>
-      <div className="flex-none ">
-        <Connect blockfrost={props.blockfrost} />
+      <div className="flex-none">
+        <ul className="menu menu-horizontal px-1">
+          <li>
+            <a href="/manager">Property Managment Company</a>
+          </li>
+          <li>
+            <a href="/investro">Investor</a>
+          </li>
+        </ul>
       </div>
     </div>
   );
