@@ -22,6 +22,8 @@ export default function Home({ data }: PageProps<Data>) {
   const { validators } = data;
 
   const blockfrost = env["BLOCKFROST"] || Deno.env.get("BLOCKFROST");
+  const policyId = env["POLICY_ID"] || Deno.env.get("POLICY_ID");
+  const asset = env["ASSET"] || Deno.env.get("ASSET");
 
   return (
     <div>
@@ -32,10 +34,12 @@ export default function Home({ data }: PageProps<Data>) {
             <div class="">
               <h1 class="">Property Managment Company Interface</h1>
               <p>Creat a real estate property bid proposal</p>
-              <div className="">
-                <pre class="whitespace-pre-wrap break-words">TODO: {}</pre>
-              </div>
-              <ManagerMint blockfrost={blockfrost} validators={validators} />
+              <ManagerMint
+                blockfrost={blockfrost}
+                validators={validators}
+                policyId={policyId}
+                asset={asset}
+              />
             </div>
           </div>
         </div>
