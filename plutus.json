@@ -6,7 +6,7 @@
     "plutusVersion": "v2",
     "compiler": {
       "name": "Aiken",
-      "version": "v1.0.26-alpha+4f99c81"
+      "version": "v1.0.29-alpha+de870e2"
     },
     "license": "Apache-2.0"
   },
@@ -33,8 +33,63 @@
           }
         }
       ],
-      "compiledCode": "5901d6010000323232323232322322232323225333009323232533300c3007300d3754002264646464a666026602c00426464a666024601a60266ea803854ccc048c034c04cdd5191980080080311299980b8008a60103d87a80001323253330163375e603660306ea800804c4cdd2a40006603400497ae0133004004001301b002301900115333012300c00113371e00402029405854ccc048cdc3800a4002266e3c0080405281bad3013002375c60220022c6028002664464a666022601660246ea800452f5bded8c026eacc058c04cdd5000991980080080191299980a8008a6103d87a8000132323253330153371e00c6eb8c05800c4cdd2a4000660326e980052f5c026600a00a0046eacc058008c064008c05c004c8cc004004dd5980a180a980a980a980a8019129998098008a5eb7bdb1804c8c8c8c94ccc050cdc7a45000021003133018337606ea4008dd3000998030030019bab3015003375c6026004602e004602a0026eb8c04cc040dd50019bac3012001300e37540042c60206022004601e00260166ea80045261365632533300830030011533300b300a37540082930b0a99980418010008a99980598051baa00414985858c020dd50019b8748008dc3a40006eb80055cd2ab9d5573caae7d5d02ba15745",
-      "hash": "a41518d18f7b0a8f20a933b805b293a97f56b2074880dad7a4dfb8d3"
+      "compiledCode": "5901e5010000323232323232322322232323225333009323232533300c3007300d3754002264646464a666026602c00426464a666024601a60266ea803854ccc048c034c04cdd5191980080080311299980b8008a60103d87a80001323253330163375e603660306ea800804c4cdd2a40006603400497ae0133004004001301b002301900115333012300c00113371e00402029405854ccc048cdc3800a4002266e3c0080405281bad30163017002375c602a0022c6eb0c050004cc88c94ccc044c02cc048dd50008a5eb804dd6180b18099baa001323300100100322533301500114c0103d87a8000132323253330153371e00c6eb8c06800c4cdd2a4000660326e9c0052f5c026600a00a0046eb0c064c068008c064008dd6180b80099198008009bac3014301530153015301500322533301300114bd70099191919299980a19b8f4881000021003133018374e660306ea4008cc060dd3800a5eb80cc01801800cdd6180c180c8019bae301700230170023758602a0026eb8c04cc040dd50019bac3012001300e37540042c60206022004601e00260166ea80045261365632533300830030011533300b300a37540082930b0a99980418010008a99980598051baa00414985858c020dd50019b8748008dc3a40006eb80055cd2ab9d5573caae7d5d02ba15745",
+      "hash": "35706ddc231b96d90e7fcfb28bada09ae54989650d3eb988899857e2"
+    },
+    {
+      "title": "property_funds.property_funds",
+      "datum": {
+        "title": "datum",
+        "schema": {
+          "$ref": "#/definitions/property_funds~1Datum"
+        }
+      },
+      "redeemer": {
+        "title": "_redeemer",
+        "schema": {
+          "$ref": "#/definitions/Void"
+        }
+      },
+      "parameters": [
+        {
+          "title": "manager",
+          "schema": {
+            "$ref": "#/definitions/ByteArray"
+          }
+        },
+        {
+          "title": "_address",
+          "schema": {
+            "$ref": "#/definitions/ByteArray"
+          }
+        },
+        {
+          "title": "_price",
+          "schema": {
+            "$ref": "#/definitions/Int"
+          }
+        },
+        {
+          "title": "_size",
+          "schema": {
+            "$ref": "#/definitions/Int"
+          }
+        },
+        {
+          "title": "_policy_id",
+          "schema": {
+            "$ref": "#/definitions/ByteArray"
+          }
+        },
+        {
+          "title": "_asset",
+          "schema": {
+            "$ref": "#/definitions/ByteArray"
+          }
+        }
+      ],
+      "compiledCode": "59019d01000032323232323223223223223223223223223225333012323253330143370e9001180a9baa30183019301637540062646464a66602ea66602e66002600a60326ea80180544cc008c00cc064dd51802980c9baa00600414a0294454ccc05ccc004c014c064dd500300a8998011801980c9baa30053019375400c6eb4c014c064dd50050a502232330010013758603a603c603c603c603c603c603c603c603c60366ea800c894ccc074004528099299980d99b8f375c603e00400829444cc00c00c004c07c00488c94ccc060cdc3a400460326ea80044cdc48011bad301c301a37540022940c014c064dd51802980c9baa00223019301a301a301a301a301a301a301a00114a066e00dd69800980a9baa0063370466e08cdc119b8248011200e480c12078481e08c05c004526136563253330113370e900018090008a99980a18098008a4c2c2c6ea80054ccc038cdc3a4000601e6ea80044c8c8c8c94ccc054c05c00852616375c602a002602a0046eb4c04c004c040dd50008b1bae001375c0026eb4004dd68009bae001375c002ae6955ceaab9e5573eae855d11",
+      "hash": "c0dcae33e9b73317d9ac62b9ac79511f1eda81e0d364370fc790b0ae"
     }
   ],
   "definitions": {
@@ -43,6 +98,17 @@
     },
     "Int": {
       "dataType": "integer"
+    },
+    "Void": {
+      "title": "Unit",
+      "description": "The nullary constructor.",
+      "anyOf": [
+        {
+          "dataType": "constructor",
+          "index": 0,
+          "fields": []
+        }
+      ]
     },
     "aiken/transaction/OutputReference": {
       "title": "OutputReference",
@@ -96,6 +162,26 @@
           "dataType": "constructor",
           "index": 1,
           "fields": []
+        }
+      ]
+    },
+    "property_funds/Datum": {
+      "title": "Datum",
+      "anyOf": [
+        {
+          "title": "Datum",
+          "dataType": "constructor",
+          "index": 0,
+          "fields": [
+            {
+              "title": "lock_until",
+              "$ref": "#/definitions/Int"
+            },
+            {
+              "title": "investor",
+              "$ref": "#/definitions/ByteArray"
+            }
+          ]
         }
       ]
     }
