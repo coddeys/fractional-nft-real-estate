@@ -5,14 +5,10 @@ use aiken/transaction.{ScriptContext, Spend, Transaction, ValidityRange}
 use aiken/transaction/credential.{VerificationKey}
 
 type Datum {
-  lock_until: POSIXTime,
-  // POSIX time in second, e.g. 1672843961000
+  // Investor's credentials 
   investor: VerificationKeyHash,
 }
 
-// Investor's credentials 
-
-// Manager's credentials
 type VerificationKeyHash =
   Hash<Blake2b_224, VerificationKey>
 
@@ -21,6 +17,8 @@ type POSIXTime =
 
 validator(
   manager: VerificationKeyHash,
+  lock_until: POSIXTime,
+  // POSIX time in second, e.g. 1672843961000
   _address: ByteArray,
   _price: Int,
   _size: Int,
