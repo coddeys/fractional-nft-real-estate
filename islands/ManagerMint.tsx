@@ -5,12 +5,13 @@ import {
   applyParams,
   LocalCache,
   Validators,
+  CreateBid,
 } from "../utils.ts";
 
 export interface AppProps {
   blockfrost: string;
   validators: Validators;
-  policyId?: string;
+  estatPolicyId?: string;
   asset?: string;
   price: number; // ada price
   size: number; // square decimeter
@@ -41,6 +42,9 @@ export default function PlatformMint(props: AppProps) {
   const [policyId, setPolicyId] = useState<string | undefined>(undefined);
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
 
+  const updatePrice = (e) => setPrice(e.currentTarget.value)
+  const updateSize = (e) => setSize(e.currentTarget.value)
+
   useEffect(() => {
     if (lucid) {
       window.cardano
@@ -53,13 +57,13 @@ export default function PlatformMint(props: AppProps) {
   }, [lucid]);
 
   let warning;
-  if (!props.asset && !props.policyId) {
+  if (!props.asset && !props.estatePolicyId) {
     warning = <Warning />;
   }
 
   let btn;
   if (lucid) {
-    btn = <PlatformMintButton />;
+    btn = <CreateBidButton onClick={createBid} />;
   } else {
     btn = <SetupLucidButton onClick={setupLucid} isLoading={waitingTx} />;
   }
@@ -77,11 +81,21 @@ export default function PlatformMint(props: AppProps) {
   return (
     <div>
       {warning}
-      <div className="">
-        <ul>
-          <li>Price: {price}</li>
-          <li>Size: {size}</li>
-        </ul>
+      <div className="flex my-4 gap-2 flex-col">
+        <input
+          type="number"
+          onInput={updatePrice}
+          value={price}
+          placeholder="Price in ADA"
+          className="input input-bordered w-full max-w-xs"
+        />
+        <input
+          type="number"
+          onInput={updateSize}
+          value={size}
+          placeholder="Size in square decimeters"
+          className="input input-bordered w-full max-w-xs"
+        />
       </div>
       {btn}
       {loading}
@@ -142,13 +156,13 @@ function SetupLucidButton(props) {
   );
 }
 
-function PlatformMintButton(props) {
+function CreateBidButton(props) {
   return (
     <button
       class="btn btn-primary"
       onClick={props.onClick}
     >
-      Mint
+      Make a Bid
     </button>
   );
 }

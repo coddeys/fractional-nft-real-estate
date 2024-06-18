@@ -33,7 +33,9 @@ export default function Home({ data }: PageProps<Data>) {
           <div class="prose prose-sm md:prose-base w-full max-w-4xl flex-grow pt-10">
             <div class="">
               <h1 class="">Property Managment Company Interface</h1>
-              <p>Creat a real estate property bid proposal</p>
+              <h3 class="text-xl">
+                Create a Real Estate Property Bid Proposal
+              </h3>
               <ManagerMint
                 blockfrost={blockfrost}
                 validators={validators}
