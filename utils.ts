@@ -14,6 +14,7 @@ import blueprint from "./plutus.json" assert { type: "json" };
 
 export type Validators = {
   platformNFT: MintingPolicy;
+  propertyFunds: SpendingValidator;
 };
 
 export function readValidators(): Validators {
@@ -25,10 +26,22 @@ export function readValidators(): Validators {
     throw new Error("Platform NFT validator not found");
   }
 
+  const propertyFunds = (blueprint as Blueprint).validators.find((v) =>
+    v.title === "property_funds.property_funds"
+  );
+
+  if (!propertyFunds) {
+    throw new Error("Property funds validator not found");
+  }
+
   return {
     platformNFT: {
       type: "PlutusV2",
       script: platformNFT.compiledCode,
+    },
+    propertyFunds: {
+      type: "PlutusV2",
+      script: propertyFunds.compiledCode,
     },
   };
 }
@@ -65,5 +78,41 @@ export function applyParams(
       script: applyDoubleCborEncoding(platformNFT),
     },
     policyId,
+  };
+}
+
+export type AppliedValidatorsPropertyFunds = {
+  platformNFT: SpendingValidator;
+};
+
+export function applyParamsPropertyFunds(
+  manager: ByteArray,
+  lockUntil: BigInt,
+  price: BigInt,
+  size: BigInt,
+  address: string,
+  validators: Validators,
+  lucid: Lucid,
+): AppliedValidators {
+  console.log(address);
+
+  const propertyFunds = applyParamsToScript(validators.propertyFunds.script, [
+    manager,
+    lockUntil,
+    price,
+    size,
+    fromText(address),
+  ]);
+
+  const lockAddress = lucid.utils.validatorToAddress({
+    type: "PlutusV2",
+    script: propertyFunds,
+  });
+
+  return {
+    propertyFunds: {
+      type: "PlutusV2",
+      script: applyDoubleCborEncoding(propertyFunds),
+    },
   };
 }

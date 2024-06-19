@@ -20,14 +20,14 @@ validator(
   manager: VerificationKeyHash,
   lock_until: POSIXTime,
   price: Int,
-  _address: ByteArray,
-  _size: Int,
-  _policy_id: ByteArray,
-  _asset: ByteArray,
+  size: Int,
+  address: ByteArray,
+  // _policy_id: ByteArray,
+  // _asset: ByteArray,
 ) {
   fn property_funds(datum: Datum, _redeemer: Void, ctx: ScriptContext) {
     // let amount_nft = price / size
-    let two_weeks = 2 * 7 * 24 * 60 * 60
+    let two_weeks = 2 * 7 * 24 * 60 * 60 * 1000
     let two_weeks_after = lock_until + two_weeks
 
     let ScriptContext { transaction, .. } = ctx

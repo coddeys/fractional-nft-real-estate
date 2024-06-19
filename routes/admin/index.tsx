@@ -13,7 +13,7 @@ interface Data {
 export const handler: Handlers<Data> = {
   GET(_req, ctx) {
     const validators = readValidators();
-    
+
     return ctx.render({ validators });
   },
 };

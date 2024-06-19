@@ -2,10 +2,10 @@ import { useEffect, useState } from "preact/hooks";
 import { Blockfrost, Constr, Data, fromText, Lucid } from "lucid-cardano";
 import {
   AppliedValidators,
-  applyParams,
+  applyParamsPropertyFunds,
+  CreateBid,
   LocalCache,
   Validators,
-  CreateBid,
 } from "../utils.ts";
 
 export interface AppProps {
@@ -35,6 +35,9 @@ function useLucid(blockfrost: string) {
 }
 
 export default function PlatformMint(props: AppProps) {
+  const [address, setAddress] = useState<string | undefined>(
+    "Koninginnenhoofd 1, 3072 AD Rotterdam",
+  );
   const [price, setPrice] = useState<number | undefined>(500000); // ada
   const [size, setSize] = useState<number | undefined>(10000); // square decimeters
   const { lucid, setupLucid } = useLucid(props.blockfrost);
@@ -42,8 +45,40 @@ export default function PlatformMint(props: AppProps) {
   const [policyId, setPolicyId] = useState<string | undefined>(undefined);
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
 
-  const updatePrice = (e) => setPrice(e.currentTarget.value)
-  const updateSize = (e) => setSize(e.currentTarget.value)
+  const [contract, setContract] = useState<string | undefined>(undefined);
+
+  const updatePrice = (e) => setPrice(e.currentTarget.value);
+  const updateSize = (e) => setSize(e.currentTarget.value);
+  const updateAddress = (e) => setAddress(e.currentTarget.value);
+
+  const createBid = async () => {
+    try {
+      setWaitingTx(true);
+
+      const managerPublicKeyHash = lucid.utils.getAddressDetails(
+        await lucid.wallet.address(),
+      ).paymentCredential.hash;
+
+      const timeNow = Date.now();
+
+      const contract = applyParamsPropertyFunds(
+        managerPublicKeyHash,
+        BigInt(timeNow),
+        BigInt(price),
+        BigInt(size),
+        address,
+        props.validators,
+        lucid!,
+      );
+
+      console.log(setContract(contract.propertyFunds.script));
+
+      setWaitingTx(false);
+    } catch (error) {
+      setWaitingTx(false);
+      console.log("error", error);
+    }
+  };
 
   useEffect(() => {
     if (lucid) {
@@ -83,6 +118,13 @@ export default function PlatformMint(props: AppProps) {
       {warning}
       <div className="flex my-4 gap-2 flex-col">
         <input
+          type="text"
+          onInput={updateAddress}
+          value={address}
+          placeholder="Property Addres"
+          className="input input-bordered w-full max-w-lg"
+        />
+        <input
           type="number"
           onInput={updatePrice}
           value={price}
@@ -100,6 +142,10 @@ export default function PlatformMint(props: AppProps) {
       {btn}
       {loading}
       {txInfo}
+
+      <div className="">
+        <pre class="whitespace-pre-wrap break-words">{contract}</pre>
+      </div>
     </div>
   );
 }
