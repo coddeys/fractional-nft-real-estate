@@ -9,8 +9,10 @@ import * as $api_bids_id_ from "./routes/api/bids/[id].ts";
 import * as $api_bids_index from "./routes/api/bids/index.ts";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
+import * as $investor_index from "./routes/investor/index.tsx";
 import * as $manager_index from "./routes/manager/index.tsx";
 import * as $Connect from "./islands/Connect.tsx";
+import * as $InvestorMint from "./islands/InvestorMint.tsx";
 import * as $ManagerMint from "./islands/ManagerMint.tsx";
 import * as $PlatformMint from "./islands/PlatformMint.tsx";
 import { type Manifest } from "$fresh/server.ts";
@@ -24,10 +26,12 @@ const manifest = {
     "./routes/api/bids/index.ts": $api_bids_index,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
+    "./routes/investor/index.tsx": $investor_index,
     "./routes/manager/index.tsx": $manager_index,
   },
   islands: {
     "./islands/Connect.tsx": $Connect,
+    "./islands/InvestorMint.tsx": $InvestorMint,
     "./islands/ManagerMint.tsx": $ManagerMint,
     "./islands/PlatformMint.tsx": $PlatformMint,
   },
