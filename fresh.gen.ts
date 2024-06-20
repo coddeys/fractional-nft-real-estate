@@ -5,6 +5,8 @@
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $admin_index from "./routes/admin/index.tsx";
+import * as $api_bids_id_ from "./routes/api/bids/[id].ts";
+import * as $api_bids_index from "./routes/api/bids/index.ts";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $manager_index from "./routes/manager/index.tsx";
@@ -18,6 +20,8 @@ const manifest = {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
     "./routes/admin/index.tsx": $admin_index,
+    "./routes/api/bids/[id].ts": $api_bids_id_,
+    "./routes/api/bids/index.ts": $api_bids_index,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
     "./routes/manager/index.tsx": $manager_index,

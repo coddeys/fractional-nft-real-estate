@@ -1,4 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
+import { Bid, Contract } from "../types.ts";
 import { Blockfrost, Constr, Data, fromText, Lucid } from "lucid-cardano";
 import {
   AppliedValidators,
@@ -49,11 +50,19 @@ export default function PlatformMint(props: AppProps) {
   const [policyId, setPolicyId] = useState<string | undefined>(undefined);
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
 
-  const [contract, setContract] = useState<string | undefined>(undefined);
+  const [contract, setContract] = useState<Contract | undefined>(undefined);
 
   const updatePrice = (e) => setPrice(e.currentTarget.value);
   const updateSize = (e) => setSize(e.currentTarget.value);
   const updateAddress = (e) => setAddress(e.currentTarget.value);
+
+  const saveBid = async (bid: Bid) => {
+    const jsonResponse = await fetch("/api/bids", {
+      method: "POST",
+      body: JSON.stringify(bid),
+    });
+    console.log(jsonResponse);
+  };
 
   const createBid = async () => {
     try {
@@ -65,7 +74,7 @@ export default function PlatformMint(props: AppProps) {
 
       const timeNow = Date.now();
 
-      const contract = applyParamsPropertyFunds(
+      const contract: Contract = applyParamsPropertyFunds(
         managerPublicKeyHash,
         BigInt(timeNow),
         BigInt(price),
@@ -76,9 +85,10 @@ export default function PlatformMint(props: AppProps) {
       );
 
       const contractAddress = lucid.utils.validatorToAddress(contract);
+      setContract(contract);
       setContractAddress(contractAddress);
 
-      const propertyBid = {
+      const bid: Bid = {
         address: address,
         price: price,
         size: size,
@@ -86,7 +96,8 @@ export default function PlatformMint(props: AppProps) {
         contractAddress: contractAddress,
       };
 
-      console.log(propertyBid);
+      saveBid(bid);
+
       // const Datum = Data.Object({
       //   investor: String,
       // });
@@ -138,7 +149,7 @@ export default function PlatformMint(props: AppProps) {
 
   let btn;
   if (contract) {
-    btn = <ScriptPreview onClick={createBid} script={contract} />;
+    btn = <ScriptPreview onClick={createBid} contract={contract} />;
   } else if (lucid) {
     btn = <CreateBidButton onClick={createBid} />;
   } else {
@@ -254,7 +265,7 @@ function CreateBidButton(props) {
 function ScriptPreview(props) {
   return (
     <div className="">
-      <pre class="whitespace-pre-wrap break-words">{props.script}</pre>
+      <pre class="whitespace-pre-wrap break-words">{props.contract.script}</pre>
       <button
         class="btn btn-primary"
         onClick={props.onClick}
