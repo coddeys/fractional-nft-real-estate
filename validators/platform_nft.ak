@@ -32,18 +32,3 @@ validator(token_name: ByteArray, utxo_ref: OutputReference) {
     }
   }
 }
-// validator(token_name: ByteArray, policy_id: ByteArray) {
-//   fn redeem(_d: Data, _r: Data, ctx: ScriptContext) -> Bool {
-//     let ScriptContext { transaction, .. } = ctx
-
-//     let Transaction { mint, .. } = transaction
-
-//     expect [(asset_name, amount)] =
-//       mint
-//         |> value.from_minted_value
-//         |> value.tokens(policy_id)
-//         |> dict.to_list()
-
-//     amount == -1 && asset_name == token_name
-//   }
-// }

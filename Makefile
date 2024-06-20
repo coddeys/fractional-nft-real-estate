@@ -1,6 +1,10 @@
+.PHONY: watch fmt
+
+fmt: build 
+	aiken fmt && deno fmt 
+
 build: validators/property_funds.ak
 	aiken build
 
-.PHONY=watch
 watch:
-	@find ./ \( -name "*ak" -o -name "*ak" \) | entr $(MAKE)
+	@find ./ \( -name "*ak" -o -name "*tsx" \) | entr $(MAKE)

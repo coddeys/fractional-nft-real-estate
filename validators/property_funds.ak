@@ -22,9 +22,9 @@ validator(
   price: Int,
   size: Int,
   address: ByteArray,
+) {
   // _policy_id: ByteArray,
   // _asset: ByteArray,
-) {
   fn property_funds(datum: Datum, _redeemer: Void, ctx: ScriptContext) {
     // let amount_nft = price / size
     let two_weeks = 2 * 7 * 24 * 60 * 60 * 1000

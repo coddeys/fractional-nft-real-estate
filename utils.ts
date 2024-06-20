@@ -94,8 +94,6 @@ export function applyParamsPropertyFunds(
   validators: Validators,
   lucid: Lucid,
 ): AppliedValidators {
-  console.log(address);
-
   const propertyFunds = applyParamsToScript(validators.propertyFunds.script, [
     manager,
     lockUntil,
@@ -110,9 +108,20 @@ export function applyParamsPropertyFunds(
   });
 
   return {
-    propertyFunds: {
-      type: "PlutusV2",
-      script: applyDoubleCborEncoding(propertyFunds),
-    },
+    type: "PlutusV2",
+    script: applyDoubleCborEncoding(propertyFunds),
   };
+}
+
+export async function lock(lovelace, { into, datum, lucid }): Promise<TxHash> {
+  const contractAddress = lucid.utils.validatorToAddress(into);
+
+  const tx = await lucid
+    .newTx()
+    .payToContract(contractAddress, { inline: datum }, { lovelace })
+    .complete();
+
+  const signedTx = await tx.sign().complete();
+
+  return signedTx.submit();
 }

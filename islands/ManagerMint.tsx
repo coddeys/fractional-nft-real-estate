@@ -5,6 +5,7 @@ import {
   applyParamsPropertyFunds,
   CreateBid,
   LocalCache,
+  lock,
   Validators,
 } from "../utils.ts";
 
@@ -37,6 +38,9 @@ function useLucid(blockfrost: string) {
 export default function PlatformMint(props: AppProps) {
   const [address, setAddress] = useState<string | undefined>(
     "Koninginnenhoofd 1, 3072 AD Rotterdam",
+  );
+  const [contractAddress, setContractAddress] = useState<string | undefined>(
+    undefined,
   );
   const [price, setPrice] = useState<number | undefined>(500000); // ada
   const [size, setSize] = useState<number | undefined>(10000); // square decimeters
@@ -71,7 +75,43 @@ export default function PlatformMint(props: AppProps) {
         lucid!,
       );
 
-      console.log(setContract(contract.propertyFunds.script));
+      const contractAddress = lucid.utils.validatorToAddress(contract);
+      setContractAddress(contractAddress);
+
+      const propertyBid = {
+        address: address,
+        price: price,
+        size: size,
+        contract: contract,
+        contractAddress: contractAddress,
+      };
+
+      console.log(propertyBid);
+      // const Datum = Data.Object({
+      //   investor: String,
+      // });
+
+      // type Datum = Data.Static<typeof Datum>;
+
+      // const datum = Data.to<Datum>(
+      //   {
+      //     investor: managerPublicKeyHash,
+      //   },
+      //   Datum,
+      // );
+
+      // const txLock = await lock(1000000, {
+      //   into: contract.propertyFunds,
+      //   datum: datum,
+      //   lucid: lucid,
+      // });
+
+      // await lucid.awaitTx(txLock);
+
+      // console.log(`1 tADA locked into the contract
+      //    Tx ID: ${txLock}
+      //   Datum: ${datum}
+      // `);
 
       setWaitingTx(false);
     } catch (error) {
@@ -97,7 +137,9 @@ export default function PlatformMint(props: AppProps) {
   }
 
   let btn;
-  if (lucid) {
+  if (contract) {
+    btn = <ScriptPreview onClick={createBid} script={contract} />;
+  } else if (lucid) {
     btn = <CreateBidButton onClick={createBid} />;
   } else {
     btn = <SetupLucidButton onClick={setupLucid} isLoading={waitingTx} />;
@@ -142,10 +184,6 @@ export default function PlatformMint(props: AppProps) {
       {btn}
       {loading}
       {txInfo}
-
-      <div className="">
-        <pre class="whitespace-pre-wrap break-words">{contract}</pre>
-      </div>
     </div>
   );
 }
@@ -210,5 +248,19 @@ function CreateBidButton(props) {
     >
       Make a Bid
     </button>
+  );
+}
+
+function ScriptPreview(props) {
+  return (
+    <div className="">
+      <pre class="whitespace-pre-wrap break-words">{props.script}</pre>
+      <button
+        class="btn btn-primary"
+        onClick={props.onClick}
+      >
+        Pay to Address
+      </button>
+    </div>
   );
 }
