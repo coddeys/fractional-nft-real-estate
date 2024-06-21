@@ -2,28 +2,27 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 
 import InvestorMint from "../../islands/InvestorMint.tsx";
 import { Header } from "../../components/Header.tsx";
+import { BidsView } from "../../components/Bid.tsx";
 import { env } from "../../config.ts";
 
-import { readValidators, Validators } from "../../utils.ts";
-
-interface Data {
-  validators: Validators;
-}
-
 export const handler: Handlers<Data> = {
-  GET(_req, ctx) {
-    const validators = readValidators();
+  async GET(_req, ctx) {
+    const kv = await Deno.openKv(
+      "https://api.deno.com/databases/824bd08c-5681-4772-947f-b1ef806f3747/connect",
+    );
+    // const kv = await Deno.openKv();
+    const iter = await kv.list({ prefix: ["bid"] });
+    const bids = [];
+    for await (const res of iter) bids.push(res.value);
 
-    return ctx.render({ validators });
+    return ctx.render({ bids });
   },
 };
 
 export default function Home({ data }: PageProps<Data>) {
-  const { validators } = data;
+  const { bids } = data;
 
   const blockfrost = env["BLOCKFROST"] || Deno.env.get("BLOCKFROST");
-  const policyId = env["POLICY_ID"] || Deno.env.get("POLICY_ID");
-  const asset = env["ASSET"] || Deno.env.get("ASSET");
 
   return (
     <div>
@@ -36,11 +35,8 @@ export default function Home({ data }: PageProps<Data>) {
               <h3 class="text-xl my-4">
                 Choose the real estate obejct where do you want to invest
               </h3>
-              <InvestorMint
-                blockfrost={blockfrost}
-                validators={validators}
-                policyId={policyId}
-                asset={asset}
+              <BidsView
+                bids={bids}
               />
             </div>
           </div>

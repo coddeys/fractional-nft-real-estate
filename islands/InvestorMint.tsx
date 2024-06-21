@@ -30,6 +30,7 @@ function useLucid(blockfrost: string) {
 }
 
 export default function PlatformMint(props: AppProps) {
+  const [amount, setAmount] = useState<number>(100);
   const [bids, setBids] = useState<Bid[]>([]);
   const { lucid, setupLucid } = useLucid(props.blockfrost);
   const [waitingTx, setWaitingTx] = useState<boolean>(false);
@@ -37,62 +38,57 @@ export default function PlatformMint(props: AppProps) {
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
   const tokenName = "EstateClub";
 
+  const updateAmount = (e) => setAmount(e.currentTarget.value);
 
-  const allBids = async () => {
-    const jsonResponse = await fetch("/api/bids");
-    const response = await jsonResponse.json();
-    const bids = response.map((x) => x.value);
-    setBids(bids);
-  };
-
-  const mintPlatformNFT = async () => {
+  const invest = async (bid, amount) => {
     try {
       setWaitingTx(true);
+      console.log("Hello");
+      console.log(bid);
+      // const lovelace = Number(5) * 1000000;
+      // const mintRedeemer = Data.to(new Constr(0, []));
 
-      const lovelace = Number(5) * 1000000;
-      const mintRedeemer = Data.to(new Constr(0, []));
+      // const utxos = await lucid?.wallet.getUtxos()!;
+      // const utxo = utxos[0];
+      // const outputReference = {
+      //   txHash: utxo.txHash,
+      //   outputIndex: utxo.outputIndex,
+      // };
 
-      const utxos = await lucid?.wallet.getUtxos()!;
-      const utxo = utxos[0];
-      const outputReference = {
-        txHash: utxo.txHash,
-        outputIndex: utxo.outputIndex,
-      };
+      // const contract = applyParams(
+      //   tokenName,
+      //   outputReference,
+      //   props.validators,
+      //   lucid!,
+      // );
 
-      const contract = applyParams(
-        tokenName,
-        outputReference,
-        props.validators,
-        lucid!,
-      );
+      // const assetName = `${contract!.policyId}${fromText(tokenName)}`;
 
-      const assetName = `${contract!.policyId}${fromText(tokenName)}`;
+      // const wAddr = await lucid.wallet.address();
 
-      const wAddr = await lucid.wallet.address();
+      // const tx = await lucid!
+      //   .newTx()
+      //   .collectFrom([utxo])
+      //   .attachMintingPolicy(contract!.platformNFT)
+      //   .mintAssets(
+      //     { [assetName]: BigInt(1) },
+      //     mintRedeemer,
+      //   )
+      //   .payToAddress(
+      //     wAddr,
+      //     { lovelace: BigInt(lovelace) },
+      //   )
+      //   .complete();
 
-      const tx = await lucid!
-        .newTx()
-        .collectFrom([utxo])
-        .attachMintingPolicy(contract!.platformNFT)
-        .mintAssets(
-          { [assetName]: BigInt(1) },
-          mintRedeemer,
-        )
-        .payToAddress(
-          wAddr,
-          { lovelace: BigInt(lovelace) },
-        )
-        .complete();
+      // const signedx = await tx.sign().complete();
+      // const txHash = await signedx.submit();
+      // const success = await lucid!.awaitTx(txHash);
 
-      const signedx = await tx.sign().complete();
-      const txHash = await signedx.submit();
-      const success = await lucid!.awaitTx(txHash);
-
-      if (success) {
-        setWaitingTx(false);
-        setPolicyId(contract!.policyId);
-        setTxHash(txHash);
-      }
+      // if (success) {
+      //   setWaitingTx(false);
+      //   setPolicyId(contract!.policyId);
+      //   setTxHash(txHash);
+      // }
     } catch (error) {
       setWaitingTx(false);
       console.error("error", error);
@@ -100,6 +96,12 @@ export default function PlatformMint(props: AppProps) {
   };
 
   useEffect(() => {
+    fetch("/api/bids").then((res) => {
+      return res.json();
+    }).then((data) => {
+      setBids(data.map((x) => x.value));
+    });
+
     if (lucid) {
       window.cardano
         .nami
@@ -114,8 +116,7 @@ export default function PlatformMint(props: AppProps) {
   if (lucid) {
     btn = <PlatformMintButton onClick={mintPlatformNFT} />;
   } else {
-    btn = <PlatformMintButton onClick={allBids} />;
-//    btn = <SetupLucidButton onClick={setupLucid} isLoading={waitingTx} />;
+    btn = <SetupLucidButton onClick={setupLucid} isLoading={waitingTx} />;
   }
 
   let txInfo;
@@ -132,25 +133,63 @@ export default function PlatformMint(props: AppProps) {
     <div>
       {btn}
       {loading}
-      <BidsView bids={bids} />
+      <BidsView
+        bids={bids}
+        onInput={updateAmount}
+        value={amount}
+        invest={invest}
+      />
       {txInfo}
     </div>
   );
 }
 
 function BidsView(props) {
+  const listBids = props.bids.map((bid) => (
+    <div className="card w-full bg-base-100 shadow-xl">
+      <div className="card-body">
+        <h2 className="card-title">
+          {bid.price}₳ | {bid.size / 100}㎡
+        </h2>
+        <p>{bid.address}</p>
+        <a
+          href={`https://preview.cexplorer.io/address/${bid.contractAddress}`}
+          class="link"
+        >
+          {bid.contractAddress}
+        </a>
+        <div className="card-actions justify-end">
+          <input
+            type="number"
+            onInput={props.onInpur}
+            value={props.value}
+            placeholder="Price in ADA"
+            className="input input-bordered w-full max-w-xs"
+          />
+          <button
+            className="btn btn-primary"
+            onClick={props.invest}
+          >
+            Invest Now
+          </button>
+        </div>
+      </div>
+    </div>
+  ));
   return (
-    <>
-      <p>{props.bids[0]?.address}</p>
-    </>
-  )
-}
-function Loading(props) {
-  return (
-    <div class="my-8">
-      <span className="loading loading-lg text-primary loading-spinner"></span>
+    <div class="flex flex-col my-8 gap-8">
+      {listBids}
     </div>
   );
+}
+
+// <div class="mockup-code pl-4">
+//   <pre class="whitespace-pre-wrap break-words">{bid.contract.script}</pre>
+// </div>
+function Loading(props) {
+  <div>
+    <span className="loading loading-lg text-primary loading-spinner"></span>
+  </div>;
 }
 function TxInfo(props) {
   return (
