@@ -7,12 +7,11 @@ import {
   applyParams,
   LocalCache,
   lock,
-  Validators,
+  Vlidators,
 } from "../utils.ts";
 
 export interface AppProps {
   blockfrost: string;
-  validators: Validators;
   bid: Bid;
 }
 
@@ -67,14 +66,14 @@ export default function PlatformLock(props: AppProps) {
       );
 
       const txLock = await lock(lovelace, {
-        into: props.validators.propertyFunds,
+        into: props.bid.contract,
         datum: datum,
         lucid: lucid,
       });
 
       await lucid.awaitTx(txLock);
 
-      console.log(`100 tADA locked into the contract
+      console.log(`${lovelace} lovelace locked into the contract
          Tx ID: ${txLock}
         Datum: ${datum}
       `);
