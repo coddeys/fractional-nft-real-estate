@@ -35,10 +35,11 @@ validator(
 
     when ctx.purpose is {
       Spend(_) -> or {
-          and {
-            must_be_signed_by(ctx.transaction, datum.investor),
-            must_start_after(ctx.transaction.validity_range, two_weeks_after),
-          },
+          // and {
+          //   must_be_signed_by(ctx.transaction, datum.investor),
+          //   must_start_after(ctx.transaction.validity_range, two_weeks_after),
+          // },
+          must_be_signed_by(ctx.transaction, datum.investor),
           and {
             must_be_signed_by(ctx.transaction, manager),
             and {

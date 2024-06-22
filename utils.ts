@@ -113,6 +113,13 @@ export function applyParamsPropertyFunds(
   };
 }
 
+
+export async function lock_(lovelace, { into, datum, lucid }): Promise<String> {
+  const contractAddress = lucid.utils.validatorToAddress(into);
+
+  return contractAddress;
+}
+
 export async function lock(lovelace, { into, datum, lucid }): Promise<TxHash> {
   const contractAddress = lucid.utils.validatorToAddress(into);
 
