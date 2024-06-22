@@ -14,6 +14,7 @@ import * as $index from "./routes/index.tsx";
 import * as $investor_index from "./routes/investor/index.tsx";
 import * as $manager_index from "./routes/manager/index.tsx";
 import * as $Connect from "./islands/Connect.tsx";
+import * as $InvestorLock from "./islands/InvestorLock.tsx";
 import * as $InvestorMint from "./islands/InvestorMint.tsx";
 import * as $ManagerMint from "./islands/ManagerMint.tsx";
 import * as $PlatformMint from "./islands/PlatformMint.tsx";
@@ -35,6 +36,7 @@ const manifest = {
   },
   islands: {
     "./islands/Connect.tsx": $Connect,
+    "./islands/InvestorLock.tsx": $InvestorLock,
     "./islands/InvestorMint.tsx": $InvestorMint,
     "./islands/ManagerMint.tsx": $ManagerMint,
     "./islands/PlatformMint.tsx": $PlatformMint,

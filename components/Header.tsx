@@ -34,7 +34,7 @@ export function Header(props: { blockfrost: string }) {
             <a href="/manager">Property Managment Company</a>
           </li>
           <li>
-            <a href="/investor">Investor</a>
+            <a href="/bids">Bids</a>
           </li>
         </ul>
       </div>

@@ -43,6 +43,7 @@ export default function PlatformMint(props: AppProps) {
   const invest = async (bid, amount) => {
     try {
       setWaitingTx(true);
+
       console.log("Hello");
       console.log(bid);
       // const lovelace = Number(5) * 1000000;
