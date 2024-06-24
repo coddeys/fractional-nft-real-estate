@@ -73,10 +73,12 @@ export default function PlatformMint(props: AppProps) {
       ).paymentCredential.hash;
 
       const timeNow = Date.now();
+      const timeNowPlus2hour = Math.round(timeNow / 10000000) * 10000000;
+      console.log(timeNowPlus2hour);
 
       const contract: Contract = applyParamsPropertyFunds(
         managerPublicKeyHash,
-        BigInt(timeNow),
+        BigInt(timeNowPlus2hour),
         BigInt(price),
         BigInt(size),
         address,
