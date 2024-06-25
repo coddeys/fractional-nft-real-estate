@@ -52,6 +52,10 @@ export default function PlatformMint(props: AppProps) {
 
   const [contract, setContract] = useState<Contract | undefined>(undefined);
 
+  const [parameterizedContracts, setParameterizedContracts] = useState<
+    AppliedValidators | null
+  >(null);
+
   const updatePrice = (e) => setPrice(e.currentTarget.value);
   const updateSize = (e) => setSize(e.currentTarget.value);
   const updateAddress = (e) => setAddress(e.currentTarget.value);
@@ -61,7 +65,40 @@ export default function PlatformMint(props: AppProps) {
       method: "POST",
       body: JSON.stringify(bid),
     });
-    console.log(jsonResponse);
+  };
+
+  const generateBid = async () => {
+    try {
+      const managerPublicKeyHash = lucid.utils.getAddressDetails(
+        await lucid.wallet.address(),
+      ).paymentCredential.hash;
+
+      const utxos = await lucid?.wallet.getUtxos()!;
+
+      const utxo = utxos[0];
+      const outputReference = {
+        txHash: utxo.txHash,
+        outputIndex: utxo.outputIndex,
+      };
+
+      const timeNow = Date.now();
+      const timeNowPlus2hour = Math.round(timeNow / 10000000) * 10000000;
+
+      const parameterizedValidators: Contract = applyParamsProperty(
+        managerPublicKeyHash,
+        BigInt(timeNowPlus2hour),
+        BigInt(price),
+        BigInt(size),
+        address,
+        outputReference,
+        props.validators,
+        lucid!,
+      );
+
+      setParameterizedContracts(parameterizedValidators);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   const createBid = async () => {
@@ -95,7 +132,6 @@ export default function PlatformMint(props: AppProps) {
         lucid!,
       );
 
-      console.log(contract);
       // const contractAddress = lucid.utils.validatorToAddress(contract);
       // setContract(contract);
       // setContractAddress(contractAddress);
@@ -161,10 +197,12 @@ export default function PlatformMint(props: AppProps) {
   }
 
   let btn;
-  if (contract) {
-    btn = <ScriptPreview onClick={createBid} contract={contract} />;
+  if (parameterizedContracts) {
+    btn = (
+      <ScriptPreview onClick={createBid} contracts={parameterizedContracts} />
+    );
   } else if (lucid) {
-    btn = <CreateBidButton onClick={createBid} />;
+    btn = <CreateBidButton onClick={generateBid} />;
   } else {
     btn = <SetupLucidButton onClick={setupLucid} isLoading={waitingTx} />;
   }
@@ -278,7 +316,14 @@ function CreateBidButton(props) {
 function ScriptPreview(props) {
   return (
     <div className="">
-      <pre class="whitespace-pre-wrap break-words">{props.contract.script}</pre>
+      <p>Policy Id</p>
+      <p>{props.contracts.propertyPolicyId}</p>
+      <p>Property Script Address</p>
+      <p>{props.contracts.propertyScriptAddress}</p>
+      <p>Policy Script</p>
+      <pre class="whitespace-pre-wrap break-words">{props.contracts.propertyToken.script}</pre>
+      <p>Property Script</p>
+      <pre class="whitespace-pre-wrap break-words">{props.contracts.propertyFunds.script}</pre>
       <button
         class="btn btn-primary"
         onClick={props.onClick}

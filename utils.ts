@@ -131,7 +131,6 @@ export function applyParamsProperty(
     script: propertyFunds,
   });
 
-
   const propertyToken = applyParamsToScript(validators.propertyToken.script, [
     manager,
     lockUntil,
@@ -140,7 +139,6 @@ export function applyParamsProperty(
     fromText(address),
     outRef,
   ]);
-
 
   const propertyPolicyId = lucid.utils.validatorToScriptHash({
     type: "PlutusV2",
