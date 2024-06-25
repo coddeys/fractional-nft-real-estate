@@ -1,9 +1,11 @@
+import { AppliedValidators } from "./utils.ts";
+
 export type Bid = {
   address: String;
   price: number;
   size: number;
-  contract: Contract;
-  contractAddress: String;
+  contract: AppliedValidators;
+  txHash: String;
 };
 
 export type Contract = {

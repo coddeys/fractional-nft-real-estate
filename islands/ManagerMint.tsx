@@ -97,7 +97,7 @@ export default function PlatformMint(props: AppProps) {
 
       setParameterizedContracts(parameterizedValidators);
     } catch (error) {
-      console.log("error", error);
+      console.error("error", error);
     }
   };
 
@@ -110,52 +110,48 @@ export default function PlatformMint(props: AppProps) {
       }`;
 
       // Action::Mint
-      const mintRedeemer = Data.to(new Constr(0, []));
+      const redeemer = Data.to(new Constr(0, []));
 
       const utxos = await lucid?.wallet.getUtxos()!;
       const utxo = utxos[0];
 
       const tx = await lucid!
         .newTx()
-        // .collectFrom([utxo])
+        .collectFrom([utxo])
         .attachMintingPolicy(parameterizedContracts!.propertyToken)
         .mintAssets(
-          { [assetName]: BigInt(1) },
-          mintRedeemer,
+          { [assetName]: BigInt(10000) },
+          redeemer,
         )
-        // .payToContract(
-        //   parameterizedContracts!.lockAddress,
-        //   { inline: Data.void() },
-        //   { "lovelace": BigInt(lovelace) },
-        // )
+        .payToContract(
+          parameterizedContracts!.propertyScriptAddress,
+          { inline: Data.void() },
+          { [assetName]: BigInt(10000) },
+        )
+        .addSigner(await lucid.wallet.address())
         .complete();
 
-      console.log(tx);
-      // const txSigned = await tx.sign().complete();
+      const txSigned = await tx.sign().complete();
 
-      // const txHash = await txSigned.submit();
+      const txHash = await txSigned.submit();
 
-      // const success = await lucid!.awaitTx(txHash);
+      const success = await lucid!.awaitTx(txHash);
 
-      // // Wait a little bit longer so ExhaustedUTxOError doesn't happen
-      // // in the next Tx
-      // setTimeout(() => {
-      //   setWaitingLockTx(false);
+      setTimeout(() => {
+        setWaitingTx(false);
 
-      //   if (success) {
-      //     localStorage.setItem(
-      //       "cache",
-      //       JSON.stringify({
-      //         tokenName,
-      //         giftADA,
-      //         parameterizedValidators: parameterizedContracts,
-      //         lockTxHash: txHash,
-      //       }),
-      //     );
+        const bid: Bid = {
+          address: address,
+          price: price,
+          size: size,
+          contract: parameterizedContracts,
+          txHash: txHash,
+        };
 
-      //     setLockTxHash(txHash);
-      //   }
-      // }, 3000);
+        if (success) {
+          saveBid(bid);
+        }
+      }, 3000);
     } catch (error) {
       setWaitingTx(false);
       console.log("error", error);

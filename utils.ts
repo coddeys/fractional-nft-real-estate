@@ -117,29 +117,29 @@ export function applyParamsProperty(
     BigInt(outputReference.outputIndex),
   ]);
 
-  const propertyFunds = applyParamsToScript(validators.propertyFunds.script, [
-    manager,
-    size,
-    fromText(address.substring(0,7)),
-    outRef,
-  ]);
-
-  const propertyScriptAddress = lucid.utils.validatorToAddress({
-    type: "PlutusV2",
-    script: propertyFunds,
-  });
-
   const propertyToken = applyParamsToScript(validators.propertyToken.script, [
     manager,
-    lockUntil,
-    price,
     size,
-    fromText(address.substring(0,7)),
+    fromText(address.substring(0, 7)),
+    outRef,
   ]);
 
   const propertyPolicyId = lucid.utils.validatorToScriptHash({
     type: "PlutusV2",
     script: propertyToken,
+  });
+
+  const propertyFunds = applyParamsToScript(validators.propertyFunds.script, [
+    manager,
+    lockUntil,
+    price,
+    size,
+    fromText(address.substring(0, 7)),
+  ]);
+
+  const propertyScriptAddress = lucid.utils.validatorToAddress({
+    type: "PlutusV2",
+    script: propertyFunds,
   });
 
   return {
@@ -168,4 +168,4 @@ export async function lock(lovelace, { into, datum, lucid }): Promise<TxHash> {
 
   return signedTx.submit();
 }
-1
+1;

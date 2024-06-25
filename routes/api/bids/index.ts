@@ -5,7 +5,7 @@ export const handler: Handlers<Bid | null> = {
       "https://api.deno.com/databases/824bd08c-5681-4772-947f-b1ef806f3747/connect",
     );
     // const kv = await Deno.openKv();
-    const bidKey = ["bid", bid.contractAddress];
+    const bidKey = ["bid", bid.txHash];
     const ok = await kv.atomic().set(bidKey, bid).commit();
     if (!ok) throw new Error("Something went wrong.");
     return new Response(JSON.stringify(bid));

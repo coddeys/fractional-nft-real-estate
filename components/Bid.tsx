@@ -16,7 +16,7 @@ export function BidsView({ bids }: JSX.HTMLAttributes<HTMLButtonElement>) {
           {bid.contractAddress}
         </a>
         <div className="card-actions justify-end">
-          <a href={`/bids/${bid.contractAddress}`} className="btn btn-primary">
+          <a href={`/bids/${bid.txHash}`} className="btn btn-primary">
             Invest Now
           </a>
         </div>
@@ -41,14 +41,15 @@ export function BidView({ bid }: Bid) {
         <p>
           Script Address:{" "}
           <a
-            href={`https://preview.cexplorer.io/address/${bid.contractAddress}`}
+            href={`https://preview.cexplorer.io/address/${bid.contract.propertyScriptAddress}`}
             class="link"
           >
-            {bid.contractAddress}
+            {bid.contract.propertyScriptAddress}
           </a>
         </p>
+        <p>Script</p>
         <div class="mockup-code pl-4">
-          <pre class="whitespace-pre-wrap break-words">{bid.contract.script}</pre>
+          <pre class="whitespace-pre-wrap break-words">{bid.contract.propertyFunds.script}</pre>
         </div>
       </div>
     </div>

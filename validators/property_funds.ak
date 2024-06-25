@@ -81,7 +81,7 @@ validator(
   property_size: Int,
   token_name: ByteArray,
 ) {
-  fn property_funds(datum: Datum, redeemer: Redeemer, ctx: ScriptContext) {
+  fn property_funds(_datum: Datum, redeemer: Redeemer, ctx: ScriptContext) {
     // let amount_nft = price / size
     let two_weeks = 2 * 7 * 24 * 60 * 60 * 1000
     let two_weeks_after = lock_until + two_weeks
@@ -91,7 +91,9 @@ validator(
 
     when ctx.purpose is {
       Spend(_) -> or {
-          must_be_signed_by_investor(ctx.transaction, datum),
+          // must_be_signed_by_investor(ctx.transaction, datum),
+          must_be_signed_by(ctx.transaction, manager),
+          must_send_tokens(outputs),
           and {
             must_be_signed_by(ctx.transaction, manager),
             must_send_tokens(outputs),
