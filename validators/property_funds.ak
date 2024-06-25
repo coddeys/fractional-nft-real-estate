@@ -43,8 +43,6 @@ type POSIXTime =
 
 validator(
   manager: VerificationKeyHash,
-  lock_until: POSIXTime,
-  property_price: Int,
   property_size: Int,
   property_address: ByteArray,
   utxo_ref: OutputReference,
@@ -66,12 +64,23 @@ validator(
       Mint -> {
         expect Some(_input) =
           list.find(inputs, fn(input) { input.output_reference == utxo_ref })
-        amount == property_size && asset_name == property_address
+        amount == property_size && asset_name == property_address && must_be_signed_by(
+          ctx.transaction,
+          manager,
+        )
       }
       Burn -> amount == property_size && asset_name == property_address
     }
   }
+}
 
+validator(
+  manager: VerificationKeyHash,
+  lock_until: POSIXTime,
+  property_price: Int,
+  property_size: Int,
+  property_address: ByteArray,
+) {
   fn property_funds(datum: Datum, redeemer: Redeemer, ctx: ScriptContext) {
     // let amount_nft = price / size
     let two_weeks = 2 * 7 * 24 * 60 * 60 * 1000

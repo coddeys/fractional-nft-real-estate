@@ -119,8 +119,6 @@ export function applyParamsProperty(
 
   const propertyFunds = applyParamsToScript(validators.propertyFunds.script, [
     manager,
-    lockUntil,
-    price,
     size,
     fromText(address),
     outRef,
@@ -137,7 +135,6 @@ export function applyParamsProperty(
     price,
     size,
     fromText(address),
-    outRef,
   ]);
 
   const propertyPolicyId = lucid.utils.validatorToScriptHash({
