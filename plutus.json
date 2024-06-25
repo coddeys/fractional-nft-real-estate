@@ -76,7 +76,7 @@
           }
         },
         {
-          "title": "property_address",
+          "title": "token_name",
           "schema": {
             "$ref": "#/definitions/ByteArray"
           }
@@ -107,7 +107,7 @@
           }
         },
         {
-          "title": "property_address",
+          "title": "token_name",
           "schema": {
             "$ref": "#/definitions/ByteArray"
           }

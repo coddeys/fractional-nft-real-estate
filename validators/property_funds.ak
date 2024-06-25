@@ -44,7 +44,7 @@ type POSIXTime =
 validator(
   manager: VerificationKeyHash,
   property_size: Int,
-  property_address: ByteArray,
+  token_name: ByteArray,
   utxo_ref: OutputReference,
 ) {
   fn property_token(rdmr: Action, ctx: ScriptContext) -> Bool {
@@ -64,12 +64,12 @@ validator(
       Mint -> {
         expect Some(_input) =
           list.find(inputs, fn(input) { input.output_reference == utxo_ref })
-        amount == property_size && asset_name == property_address && must_be_signed_by(
+        amount == property_size && asset_name == token_name && must_be_signed_by(
           ctx.transaction,
           manager,
         )
       }
-      Burn -> amount == property_size && asset_name == property_address
+      Burn -> amount == property_size && asset_name == token_name
     }
   }
 }
@@ -79,7 +79,7 @@ validator(
   lock_until: POSIXTime,
   property_price: Int,
   property_size: Int,
-  property_address: ByteArray,
+  token_name: ByteArray,
 ) {
   fn property_funds(datum: Datum, redeemer: Redeemer, ctx: ScriptContext) {
     // let amount_nft = price / size

@@ -102,35 +102,69 @@ export default function PlatformMint(props: AppProps) {
   };
 
   const createBid = async () => {
-    try {
-      setWaitingTx(true);
+    setWaitingTx(true);
 
-      const managerPublicKeyHash = lucid.utils.getAddressDetails(
-        await lucid.wallet.address(),
-      ).paymentCredential.hash;
+    try {
+      const assetName = `${parameterizedContracts!.propertyPolicyId}${
+        fromText(address.substring(0, 7))
+      }`;
+
+      // Action::Mint
+      const mintRedeemer = Data.to(new Constr(0, []));
 
       const utxos = await lucid?.wallet.getUtxos()!;
-
       const utxo = utxos[0];
-      const outputReference = {
-        txHash: utxo.txHash,
-        outputIndex: utxo.outputIndex,
-      };
 
-      const timeNow = Date.now();
-      const timeNowPlus2hour = Math.round(timeNow / 10000000) * 10000000;
-      console.log(timeNowPlus2hour);
+      const tx = await lucid!
+        .newTx()
+        // .collectFrom([utxo])
+        .attachMintingPolicy(parameterizedContracts!.propertyToken)
+        .mintAssets(
+          { [assetName]: BigInt(1) },
+          mintRedeemer,
+        )
+        // .payToContract(
+        //   parameterizedContracts!.lockAddress,
+        //   { inline: Data.void() },
+        //   { "lovelace": BigInt(lovelace) },
+        // )
+        .complete();
 
-      const contract: Contract = applyParamsProperty(
-        managerPublicKeyHash,
-        BigInt(timeNowPlus2hour),
-        BigInt(price),
-        BigInt(size),
-        address,
-        outputReference,
-        props.validators,
-        lucid!,
-      );
+      console.log(tx);
+      // const txSigned = await tx.sign().complete();
+
+      // const txHash = await txSigned.submit();
+
+      // const success = await lucid!.awaitTx(txHash);
+
+      // // Wait a little bit longer so ExhaustedUTxOError doesn't happen
+      // // in the next Tx
+      // setTimeout(() => {
+      //   setWaitingLockTx(false);
+
+      //   if (success) {
+      //     localStorage.setItem(
+      //       "cache",
+      //       JSON.stringify({
+      //         tokenName,
+      //         giftADA,
+      //         parameterizedValidators: parameterizedContracts,
+      //         lockTxHash: txHash,
+      //       }),
+      //     );
+
+      //     setLockTxHash(txHash);
+      //   }
+      // }, 3000);
+    } catch (error) {
+      setWaitingTx(false);
+      console.log("error", error);
+    }
+  };
+
+  const createBid_ = async () => {
+    try {
+      setWaitingTx(true);
 
       // const contractAddress = lucid.utils.validatorToAddress(contract);
       // setContract(contract);
@@ -321,9 +355,6 @@ function ScriptPreview(props) {
       <p>Property Script Address</p>
       <p>{props.contracts.propertyScriptAddress}</p>
       <p>Policy Script</p>
-      <pre class="whitespace-pre-wrap break-words">{props.contracts.propertyToken.script}</pre>
-      <p>Property Script</p>
-      <pre class="whitespace-pre-wrap break-words">{props.contracts.propertyFunds.script}</pre>
       <button
         class="btn btn-primary"
         onClick={props.onClick}
@@ -333,3 +364,7 @@ function ScriptPreview(props) {
     </div>
   );
 }
+
+// <pre class="whitespace-pre-wrap break-words">{props.contracts.propertyToken.script}</pre>
+// <p>Property Script</p>
+// <pre class="whitespace-pre-wrap break-words">{props.contracts.propertyFunds.script}</pre>

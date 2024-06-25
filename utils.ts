@@ -120,7 +120,7 @@ export function applyParamsProperty(
   const propertyFunds = applyParamsToScript(validators.propertyFunds.script, [
     manager,
     size,
-    fromText(address),
+    fromText(address.substring(0,7)),
     outRef,
   ]);
 
@@ -134,7 +134,7 @@ export function applyParamsProperty(
     lockUntil,
     price,
     size,
-    fromText(address),
+    fromText(address.substring(0,7)),
   ]);
 
   const propertyPolicyId = lucid.utils.validatorToScriptHash({
@@ -168,3 +168,4 @@ export async function lock(lovelace, { into, datum, lucid }): Promise<TxHash> {
 
   return signedTx.submit();
 }
+1
