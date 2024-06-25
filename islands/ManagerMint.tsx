@@ -3,7 +3,7 @@ import { Bid, Contract } from "../types.ts";
 import { Blockfrost, Constr, Data, fromText, Lucid } from "lucid-cardano";
 import {
   AppliedValidators,
-  applyParamsPropertyFunds,
+  applyParamsProperty,
   CreateBid,
   LocalCache,
   lock,
@@ -72,33 +72,44 @@ export default function PlatformMint(props: AppProps) {
         await lucid.wallet.address(),
       ).paymentCredential.hash;
 
+      const utxos = await lucid?.wallet.getUtxos()!;
+
+      const utxo = utxos[0];
+      const outputReference = {
+        txHash: utxo.txHash,
+        outputIndex: utxo.outputIndex,
+      };
+
       const timeNow = Date.now();
       const timeNowPlus2hour = Math.round(timeNow / 10000000) * 10000000;
       console.log(timeNowPlus2hour);
 
-      const contract: Contract = applyParamsPropertyFunds(
+      const contract: Contract = applyParamsProperty(
         managerPublicKeyHash,
         BigInt(timeNowPlus2hour),
         BigInt(price),
         BigInt(size),
         address,
+        outputReference,
         props.validators,
         lucid!,
       );
 
-      const contractAddress = lucid.utils.validatorToAddress(contract);
-      setContract(contract);
-      setContractAddress(contractAddress);
+      console.log(contract);
+      // const contractAddress = lucid.utils.validatorToAddress(contract);
+      // setContract(contract);
+      // setContractAddress(contractAddress);
 
-      const bid: Bid = {
-        address: address,
-        price: price,
-        size: size,
-        contract: contract,
-        contractAddress: contractAddress,
-      };
+      // const bid: Bid = {
+      //   address: address,
+      //   price: price,
+      //   size: size,
+      //   contract: contract,
+      //   contractAddress: contractAddress,
+      // };
 
-      saveBid(bid);
+      // console.log(bid);
+      // saveBid(bid);
 
       // const Datum = Data.Object({
       //   investor: String,

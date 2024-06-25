@@ -26,6 +26,14 @@ export function readValidators(): Validators {
     throw new Error("Platform NFT validator not found");
   }
 
+  const propertyToken = (blueprint as Blueprint).validators.find((v) =>
+    v.title === "property_funds.property_token"
+  );
+
+  if (!propertyToken) {
+    throw new Error("Property Token validator not found");
+  }
+
   const propertyFunds = (blueprint as Blueprint).validators.find((v) =>
     v.title === "property_funds.property_funds"
   );
@@ -42,6 +50,10 @@ export function readValidators(): Validators {
     propertyFunds: {
       type: "PlutusV2",
       script: propertyFunds.compiledCode,
+    },
+    propertyToken: {
+      type: "PlutusV2",
+      script: propertyToken.compiledCode,
     },
   };
 }
@@ -81,35 +93,71 @@ export function applyParams(
   };
 }
 
-export type AppliedValidatorsPropertyFunds = {
-  platformNFT: SpendingValidator;
+// PROPERTY LOGIC
+
+export type AppliedValidatorsProperty = {
+  propertyToken: MintingPolicy;
+  propertyFunds: SpendingValidator;
+  propertyPolicyId: string;
+  propertyScriptAddress: string;
 };
 
-export function applyParamsPropertyFunds(
+export function applyParamsProperty(
   manager: ByteArray,
   lockUntil: BigInt,
   price: BigInt,
   size: BigInt,
   address: string,
+  outputReference: OutRef,
   validators: Validators,
   lucid: Lucid,
 ): AppliedValidators {
+  const outRef = new Constr(0, [
+    new Constr(0, [outputReference.txHash]),
+    BigInt(outputReference.outputIndex),
+  ]);
+
   const propertyFunds = applyParamsToScript(validators.propertyFunds.script, [
     manager,
     lockUntil,
     price,
     size,
     fromText(address),
+    outRef,
   ]);
 
-  const lockAddress = lucid.utils.validatorToAddress({
+  const propertyScriptAddress = lucid.utils.validatorToAddress({
     type: "PlutusV2",
     script: propertyFunds,
   });
 
-  return {
+
+  const propertyToken = applyParamsToScript(validators.propertyToken.script, [
+    manager,
+    lockUntil,
+    price,
+    size,
+    fromText(address),
+    outRef,
+  ]);
+
+
+  const propertyPolicyId = lucid.utils.validatorToScriptHash({
     type: "PlutusV2",
-    script: applyDoubleCborEncoding(propertyFunds),
+    script: propertyToken,
+  });
+
+  return {
+    propertyToken: {
+      type: "PlutusV2",
+      script: applyDoubleCborEncoding(propertyToken),
+    },
+    propertyFunds: {
+      type: "PlutusV2",
+      script: applyDoubleCborEncoding(propertyFunds),
+    },
+    propertyPolicyId,
+    propertyScriptAddress,
   };
 }
 

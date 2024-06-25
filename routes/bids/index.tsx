@@ -12,6 +12,8 @@ export const handler: Handlers<Data> = {
     );
     // const kv = await Deno.openKv();
     const iter = await kv.list({ prefix: ["bid"] });
+    // delete all
+    // for await (const res of iter) kv.delete(res.key)
     const bids = [];
     for await (const res of iter) bids.push(res.value);
 

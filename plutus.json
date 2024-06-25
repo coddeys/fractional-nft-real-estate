@@ -37,17 +37,11 @@
       "hash": "a41518d18f7b0a8f20a933b805b293a97f56b2074880dad7a4dfb8d3"
     },
     {
-      "title": "property_funds.property_funds",
-      "datum": {
-        "title": "datum",
-        "schema": {
-          "$ref": "#/definitions/property_funds~1Datum"
-        }
-      },
+      "title": "property_funds.property_token",
       "redeemer": {
-        "title": "_redeemer",
+        "title": "rdmr",
         "schema": {
-          "$ref": "#/definitions/Void"
+          "$ref": "#/definitions/property_funds~1Action"
         }
       },
       "parameters": [
@@ -64,26 +58,87 @@
           }
         },
         {
-          "title": "price",
+          "title": "property_price",
           "schema": {
             "$ref": "#/definitions/Int"
           }
         },
         {
-          "title": "size",
+          "title": "property_size",
           "schema": {
             "$ref": "#/definitions/Int"
           }
         },
         {
-          "title": "address",
+          "title": "property_address",
           "schema": {
             "$ref": "#/definitions/ByteArray"
           }
+        },
+        {
+          "title": "utxo_ref",
+          "schema": {
+            "$ref": "#/definitions/aiken~1transaction~1OutputReference"
+          }
         }
       ],
-      "compiledCode": "59027201000032323232323232232232232232232232232253330103232325332330143001301537546004602c6ea80144c8c94ccc058cc004c008c060dd50039bae300230183754016294454ccc058cc004c008c060dd500380a0a99980b19299980b9802180c1baa0011337120266eb4c070c064dd50008a50300230183754600460306ea8c06cc070c070c070c070c070c070c070c060dd51801180c1baa0071337100206466600200200c9000111299980e00108008999801801980f80119b8032533301a3007301b37540022900009bad301f301c375400264a666034600e60366ea80045300103d87a80001323300100137566040603a6ea8008894ccc07c004530103d87a80001323232533301f3371e91100375c6040006266e95200033023375000297ae0133005005002375a60400046046004604200264660020026eacc020c070dd51804180e1baa301f00322533301e00114c0103d87a80001323232533301e3371e91100375c603e006266e95200033022374c00297ae01330050050023756603e0046044004604000200229405281119198008009bac301d301e301e301e301e301e301e301e301e301a375400644a66603800229404c94ccc068cdc79bae301f00200414a2266006006002603e002460340026e1d200214a04603060320026eb0c058c04cdd5180b18099baa0023370466e08cdc119b823370490022401c9018240f0903c241a01e29309b2b19299980799b8748000c04000454ccc048c04400452616163754002a66601866e1d2000300d375400226464a66602260280042930b1bae3012001300e37540022c6eb8004dd68009bad001375a0026eb80055cd2ab9d5573caae7d5d02ba157441",
-      "hash": "a674dc13c46a131859959cf160560b57411020c7992a941c0d294c21"
+      "compiledCode": "59048e0100003232323232323223223223223223222253232333010300230113754006264a666022646464a666028600c602a6ea80044c8c8c8c94ccc06cc0780084c8c94ccc068c030c06cdd50070a99980d1806180d9baa323300100100622533301f00114c103d87a800013232533301e3375e604660406ea800804c4cdd2a40006604400497ae0133004004001302300230210011533301a3370e002024266e3c0080405280b0a99980d19b8700101213371e0040202940dd6980d8011bae301900116301c0013322325333019300a301a3754002297adef6c6013756603c60366ea8004c8cc00400400c894ccc0740045300103d87a80001323232533301d3371e00c6eb8c07800c4cdd2a4000660426e980052f5c026600a00a0046eacc078008c084008c07c004c8cc004004dd5980e180e980e980e980e80191299980d8008a5eb7bdb1804c8c8c8c94ccc070cdc7a45000021003133020337606ea4008dd3000998030030019bab301d003375c6036004603e004603a0026eb8c06cc060dd50019bac301a001301637540042c60306032004602e00260266ea8010526136563253330113003001153330143013375400a2930b0a99980898010008a99980a18099baa00514985858c044dd5002099191919191299980b19191919299980d1805980d9baa301f3020301c375400a26464a666038646466002002646600200201e44a666046002297ae013302437526eb8c018c088dd518128009980100118130009129998110008a51132533302033005004375c604a0042660060060022940c094004c008c078dd50038a511533301c330013002301e375400e03429445281119198008009bac3023302430243024302430243024302430243020375400644a66604400229404c94ccc080cdc79bae302500200414a2266006006002604a002460400022940dd6180f180f980f8011bac301d00130193754603860326ea8008cdc119b823370466e08cdc124008900724060903c240f09068078a4c26cac64a66602a600e602c6ea80044c8c94ccc068c0740084c926300500116301b001301737540022c6032602c6ea801cc8cc004004010894ccc06000452613233003003301c002325333016300830173754002264646464a66603a60400042649318040008b180f000980f0011bae301c001301837540022c60340024a666026600a60286ea80044c8c8c8c94ccc068c0740084c8c926325333019300b00113232533301e3021002132498c94ccc070c0380044c8c94ccc084c0900084c926300d001163022001301e37540042a666038601a0022646464646464a66604a60500042930b1bad30260013026002375a604800260480046eb4c088004c078dd50010b180e1baa00116301f001301b37540062a66603260140022a66603860366ea800c526161630193754004600c0062c603600260360046032002602a6ea8004588c94ccc04cc0140044c8c94ccc060c06c00852616375c6032002602a6ea800854ccc04cc0100044c8c94ccc060c06c00852616375c6032002602a6ea800858c04cdd50009bac004370e90011b8748000dd70009bad001375a0026eb4004dd7000ab9a5573aaae7955cfaba05742ae881",
+      "hash": "756a922d0d61c71d97af2a20087373ecda440f76a0f501886e489541"
+    },
+    {
+      "title": "property_funds.property_funds",
+      "datum": {
+        "title": "datum",
+        "schema": {
+          "$ref": "#/definitions/List$property_funds~1Investor"
+        }
+      },
+      "redeemer": {
+        "title": "redeemer",
+        "schema": {
+          "$ref": "#/definitions/RedeemerWrapper$property_funds~1Manager"
+        }
+      },
+      "parameters": [
+        {
+          "title": "manager",
+          "schema": {
+            "$ref": "#/definitions/ByteArray"
+          }
+        },
+        {
+          "title": "lock_until",
+          "schema": {
+            "$ref": "#/definitions/Int"
+          }
+        },
+        {
+          "title": "property_price",
+          "schema": {
+            "$ref": "#/definitions/Int"
+          }
+        },
+        {
+          "title": "property_size",
+          "schema": {
+            "$ref": "#/definitions/Int"
+          }
+        },
+        {
+          "title": "property_address",
+          "schema": {
+            "$ref": "#/definitions/ByteArray"
+          }
+        },
+        {
+          "title": "utxo_ref",
+          "schema": {
+            "$ref": "#/definitions/aiken~1transaction~1OutputReference"
+          }
+        }
+      ],
+      "compiledCode": "59048e0100003232323232323223223223223223222253232333010300230113754006264a666022646464a666028600c602a6ea80044c8c8c8c94ccc06cc0780084c8c94ccc068c030c06cdd50070a99980d1806180d9baa323300100100622533301f00114c103d87a800013232533301e3375e604660406ea800804c4cdd2a40006604400497ae0133004004001302300230210011533301a3370e002024266e3c0080405280b0a99980d19b8700101213371e0040202940dd6980d8011bae301900116301c0013322325333019300a301a3754002297adef6c6013756603c60366ea8004c8cc00400400c894ccc0740045300103d87a80001323232533301d3371e00c6eb8c07800c4cdd2a4000660426e980052f5c026600a00a0046eacc078008c084008c07c004c8cc004004dd5980e180e980e980e980e80191299980d8008a5eb7bdb1804c8c8c8c94ccc070cdc7a45000021003133020337606ea4008dd3000998030030019bab301d003375c6036004603e004603a0026eb8c06cc060dd50019bac301a001301637540042c60306032004602e00260266ea8010526136563253330113003001153330143013375400a2930b0a99980898010008a99980a18099baa00514985858c044dd5002099191919191299980b19191919299980d1805980d9baa301f3020301c375400a26464a666038646466002002646600200201e44a666046002297ae013302437526eb8c018c088dd518128009980100118130009129998110008a51132533302033005004375c604a0042660060060022940c094004c008c078dd50038a511533301c330013002301e375400e03429445281119198008009bac3023302430243024302430243024302430243020375400644a66604400229404c94ccc080cdc79bae302500200414a2266006006002604a002460400022940dd6180f180f980f8011bac301d00130193754603860326ea8008cdc119b823370466e08cdc124008900724060903c240f09068078a4c26cac64a66602a600e602c6ea80044c8c94ccc068c0740084c926300500116301b001301737540022c6032602c6ea801cc8cc004004010894ccc06000452613233003003301c002325333016300830173754002264646464a66603a60400042649318040008b180f000980f0011bae301c001301837540022c60340024a666026600a60286ea80044c8c8c8c94ccc068c0740084c8c926325333019300b00113232533301e3021002132498c94ccc070c0380044c8c94ccc084c0900084c926300d001163022001301e37540042a666038601a0022646464646464a66604a60500042930b1bad30260013026002375a604800260480046eb4c088004c078dd50010b180e1baa00116301f001301b37540062a66603260140022a66603860366ea800c526161630193754004600c0062c603600260360046032002602a6ea8004588c94ccc04cc0140044c8c94ccc060c06c00852616375c6032002602a6ea800854ccc04cc0100044c8c94ccc060c06c00852616375c6032002602a6ea800858c04cdd50009bac004370e90011b8748000dd70009bad001375a0026eb4004dd7000ab9a5573aaae7955cfaba05742ae881",
+      "hash": "756a922d0d61c71d97af2a20087373ecda440f76a0f501886e489541"
     }
   ],
   "definitions": {
@@ -93,14 +148,47 @@
     "Int": {
       "dataType": "integer"
     },
-    "Void": {
-      "title": "Unit",
-      "description": "The nullary constructor.",
+    "List$property_funds/Investor": {
+      "dataType": "list",
+      "items": {
+        "$ref": "#/definitions/property_funds~1Investor"
+      }
+    },
+    "Option$aiken/transaction/credential/Referenced$aiken/transaction/credential/Credential": {
+      "title": "Optional",
+      "anyOf": [
+        {
+          "title": "Some",
+          "description": "An optional value.",
+          "dataType": "constructor",
+          "index": 0,
+          "fields": [
+            {
+              "$ref": "#/definitions/aiken~1transaction~1credential~1Referenced$aiken~1transaction~1credential~1Credential"
+            }
+          ]
+        },
+        {
+          "title": "None",
+          "description": "Nothing.",
+          "dataType": "constructor",
+          "index": 1,
+          "fields": []
+        }
+      ]
+    },
+    "RedeemerWrapper$property_funds/Manager": {
+      "title": "Wrapped Redeemer",
+      "description": "A redeemer wrapped in an extra constructor to make multi-validator detection possible on-chain.",
       "anyOf": [
         {
           "dataType": "constructor",
-          "index": 0,
-          "fields": []
+          "index": 1,
+          "fields": [
+            {
+              "$ref": "#/definitions/property_funds~1Manager"
+            }
+          ]
         }
       ]
     },
@@ -142,6 +230,88 @@
         }
       ]
     },
+    "aiken/transaction/credential/Address": {
+      "title": "Address",
+      "description": "A Cardano `Address` typically holding one or two credential references.\n\n Note that legacy bootstrap addresses (a.k.a. 'Byron addresses') are\n completely excluded from Plutus contexts. Thus, from an on-chain\n perspective only exists addresses of type 00, 01, ..., 07 as detailed\n in [CIP-0019 :: Shelley Addresses](https://github.com/cardano-foundation/CIPs/tree/master/CIP-0019/#shelley-addresses).",
+      "anyOf": [
+        {
+          "title": "Address",
+          "dataType": "constructor",
+          "index": 0,
+          "fields": [
+            {
+              "title": "payment_credential",
+              "$ref": "#/definitions/aiken~1transaction~1credential~1Credential"
+            },
+            {
+              "title": "stake_credential",
+              "$ref": "#/definitions/Option$aiken~1transaction~1credential~1Referenced$aiken~1transaction~1credential~1Credential"
+            }
+          ]
+        }
+      ]
+    },
+    "aiken/transaction/credential/Credential": {
+      "title": "Credential",
+      "description": "A general structure for representing an on-chain `Credential`.\n\n Credentials are always one of two kinds: a direct public/private key\n pair, or a script (native or Plutus).",
+      "anyOf": [
+        {
+          "title": "VerificationKeyCredential",
+          "dataType": "constructor",
+          "index": 0,
+          "fields": [
+            {
+              "$ref": "#/definitions/ByteArray"
+            }
+          ]
+        },
+        {
+          "title": "ScriptCredential",
+          "dataType": "constructor",
+          "index": 1,
+          "fields": [
+            {
+              "$ref": "#/definitions/ByteArray"
+            }
+          ]
+        }
+      ]
+    },
+    "aiken/transaction/credential/Referenced$aiken/transaction/credential/Credential": {
+      "title": "Referenced",
+      "description": "Represent a type of object that can be represented either inline (by hash)\n or via a reference (i.e. a pointer to an on-chain location).\n\n This is mainly use for capturing pointers to a stake credential\n registration certificate in the case of so-called pointer addresses.",
+      "anyOf": [
+        {
+          "title": "Inline",
+          "dataType": "constructor",
+          "index": 0,
+          "fields": [
+            {
+              "$ref": "#/definitions/aiken~1transaction~1credential~1Credential"
+            }
+          ]
+        },
+        {
+          "title": "Pointer",
+          "dataType": "constructor",
+          "index": 1,
+          "fields": [
+            {
+              "title": "slot_number",
+              "$ref": "#/definitions/Int"
+            },
+            {
+              "title": "transaction_index",
+              "$ref": "#/definitions/Int"
+            },
+            {
+              "title": "certificate_index",
+              "$ref": "#/definitions/Int"
+            }
+          ]
+        }
+      ]
+    },
     "platform_nft/Action": {
       "title": "Action",
       "anyOf": [
@@ -159,17 +329,54 @@
         }
       ]
     },
-    "property_funds/Datum": {
-      "title": "Datum",
+    "property_funds/Action": {
+      "title": "Action",
       "anyOf": [
         {
-          "title": "Datum",
+          "title": "Mint",
+          "dataType": "constructor",
+          "index": 0,
+          "fields": []
+        },
+        {
+          "title": "Burn",
+          "dataType": "constructor",
+          "index": 1,
+          "fields": []
+        }
+      ]
+    },
+    "property_funds/Investor": {
+      "title": "Investor",
+      "anyOf": [
+        {
+          "title": "Investor",
           "dataType": "constructor",
           "index": 0,
           "fields": [
             {
-              "title": "investor",
+              "title": "signature",
               "$ref": "#/definitions/ByteArray"
+            },
+            {
+              "title": "address",
+              "$ref": "#/definitions/aiken~1transaction~1credential~1Address"
+            }
+          ]
+        }
+      ]
+    },
+    "property_funds/Manager": {
+      "title": "Manager",
+      "anyOf": [
+        {
+          "title": "Manager",
+          "dataType": "constructor",
+          "index": 0,
+          "fields": [
+            {
+              "title": "address",
+              "$ref": "#/definitions/aiken~1transaction~1credential~1Address"
             }
           ]
         }
