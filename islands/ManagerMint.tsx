@@ -9,6 +9,8 @@ import {
   lock,
   Validators,
 } from "../utils.ts";
+import { Blueprint } from "../blueprint.ts";
+import blueprint from "../plutus.json" assert { type: "json" };
 
 export interface AppProps {
   blockfrost: string;
@@ -115,6 +117,16 @@ export default function PlatformMint(props: AppProps) {
       const utxos = await lucid?.wallet.getUtxos()!;
       const utxo = utxos[0];
 
+      const DatumFundsSchema = (blueprint as Blueprint).validators.find((v) =>
+        v.title === "property_funds.property_funds"
+      ).datum.schema;
+      type DatumFunds = Data.Static<typeof DatumFundsSchema>;
+      const DatumFunds = DatumFundsSchema as unknown as DatumFunds;
+      const datumFunds = Data.to(
+        new Constr(0, []),
+        DatumFunds,
+      );
+
       const tx = await lucid!
         .newTx()
         .collectFrom([utxo])
@@ -125,7 +137,7 @@ export default function PlatformMint(props: AppProps) {
         )
         .payToContract(
           parameterizedContracts!.propertyScriptAddress,
-          { inline: Data.void() },
+          { inline: datumFunds },
           { [assetName]: BigInt(10000) },
         )
         .addSigner(await lucid.wallet.address())
@@ -152,58 +164,6 @@ export default function PlatformMint(props: AppProps) {
           saveBid(bid);
         }
       }, 3000);
-    } catch (error) {
-      setWaitingTx(false);
-      console.log("error", error);
-    }
-  };
-
-  const createBid_ = async () => {
-    try {
-      setWaitingTx(true);
-
-      // const contractAddress = lucid.utils.validatorToAddress(contract);
-      // setContract(contract);
-      // setContractAddress(contractAddress);
-
-      // const bid: Bid = {
-      //   address: address,
-      //   price: price,
-      //   size: size,
-      //   contract: contract,
-      //   contractAddress: contractAddress,
-      // };
-
-      // console.log(bid);
-      // saveBid(bid);
-
-      // const Datum = Data.Object({
-      //   investor: String,
-      // });
-
-      // type Datum = Data.Static<typeof Datum>;
-
-      // const datum = Data.to<Datum>(
-      //   {
-      //     investor: managerPublicKeyHash,
-      //   },
-      //   Datum,
-      // );
-
-      // const txLock = await lock(1000000, {
-      //   into: contract.propertyFunds,
-      //   datum: datum,
-      //   lucid: lucid,
-      // });
-
-      // await lucid.awaitTx(txLock);
-
-      // console.log(`1 tADA locked into the contract
-      //    Tx ID: ${txLock}
-      //   Datum: ${datum}
-      // `);
-
-      setWaitingTx(false);
     } catch (error) {
       setWaitingTx(false);
       console.log("error", error);
@@ -360,7 +320,3 @@ function ScriptPreview(props) {
     </div>
   );
 }
-
-// <pre class="whitespace-pre-wrap break-words">{props.contracts.propertyToken.script}</pre>
-// <p>Property Script</p>
-// <pre class="whitespace-pre-wrap break-words">{props.contracts.propertyFunds.script}</pre>

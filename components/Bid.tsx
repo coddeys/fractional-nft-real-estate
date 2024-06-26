@@ -47,6 +47,15 @@ export function BidView({ bid }: Bid) {
             {bid.contract.propertyScriptAddress}
           </a>
         </p>
+        <p>
+          Policy Id:{" "}
+          <a
+            href={`https://preview.cexplorer.io/policy/${bid.contract.propertyPolicyId}`}
+            class="link"
+          >
+            {bid.contract.propertyPolicyId}
+          </a>
+        </p>
         <p>Script</p>
         <div class="mockup-code pl-4">
           <pre class="whitespace-pre-wrap break-words">{bid.contract.propertyFunds.script}</pre>

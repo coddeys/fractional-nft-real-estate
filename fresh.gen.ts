@@ -11,7 +11,6 @@ import * as $bids_id_ from "./routes/bids/[id].tsx";
 import * as $bids_index from "./routes/bids/index.tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
-import * as $investor_index from "./routes/investor/index.tsx";
 import * as $manager_index from "./routes/manager/index.tsx";
 import * as $Connect from "./islands/Connect.tsx";
 import * as $InvestorLock from "./islands/InvestorLock.tsx";
@@ -31,7 +30,6 @@ const manifest = {
     "./routes/bids/index.tsx": $bids_index,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
-    "./routes/investor/index.tsx": $investor_index,
     "./routes/manager/index.tsx": $manager_index,
   },
   islands: {

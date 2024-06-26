@@ -1,6 +1,5 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 
-import InvestorMint from "../../islands/InvestorMint.tsx";
 import { Header } from "../../components/Header.tsx";
 import { BidsView } from "../../components/Bid.tsx";
 import { env } from "../../config.ts";

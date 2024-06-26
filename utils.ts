@@ -15,6 +15,7 @@ import blueprint from "./plutus.json" assert { type: "json" };
 export type Validators = {
   platformNFT: MintingPolicy;
   propertyFunds: SpendingValidator;
+  propertyToken: MintingPolicy;
 };
 
 export function readValidators(): Validators {
@@ -135,6 +136,7 @@ export function applyParamsProperty(
     price,
     size,
     fromText(address.substring(0, 7)),
+    propertyPolicyId,
   ]);
 
   const propertyScriptAddress = lucid.utils.validatorToAddress({
@@ -155,17 +157,3 @@ export function applyParamsProperty(
     propertyScriptAddress,
   };
 }
-
-export async function lock(lovelace, { into, datum, lucid }): Promise<TxHash> {
-  const contractAddress = lucid.utils.validatorToAddress(into);
-
-  const tx = await lucid
-    .newTx()
-    .payToContract(contractAddress, { inline: datum }, { lovelace })
-    .complete();
-
-  const signedTx = await tx.sign().complete();
-
-  return signedTx.submit();
-}
-1;

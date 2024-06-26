@@ -4,36 +4,15 @@ use aiken/interval.{Finite}
 use aiken/list
 use aiken/math/rational
 use aiken/transaction.{
-  Input, Output, OutputReference, ScriptContext, Spend, Transaction,
-  ValidityRange,
+  Datum, InlineDatum, Input, Output, OutputReference, ScriptContext, Spend,
+  Transaction, ValidityRange,
 } as tx
 use aiken/transaction/credential.{Address, VerificationKey}
-use aiken/transaction/value.{lovelace_of}
+use aiken/transaction/value.{AssetName, PolicyId, lovelace_of, quantity_of}
 
 type Action {
   Mint
   Burn
-}
-
-type Datum =
-  List<Investor>
-
-type Manager {
-  address: Address,
-}
-
-type Redeemer =
-  Manager
-
-type Investor {
-  // Investor's credentials 
-  signature: VerificationKeyHash,
-  address: Address,
-}
-
-type Reedemer {
-  investors: List<Investor>,
-  manager: Manager,
 }
 
 type VerificationKeyHash =
@@ -70,14 +49,23 @@ validator(
           manager,
         )
       }
-      Burn -> amount == property_size && asset_name == token_name
+      Burn ->
+        amount == property_size && asset_name == token_name && must_be_signed_by(
+          ctx.transaction,
+          manager,
+        )
     }
   }
 }
 
-type RedeemerPerson {
-  RedemByManager
-  RedemByInvestor
+type ReedemerFunds {
+  ReleaseTokens
+  Refund
+}
+
+type DatumFunds {
+  DatumVoid
+  Investor { credential: VerificationKeyHash, address: ByteArray }
 }
 
 validator(
@@ -86,9 +74,13 @@ validator(
   property_price: Int,
   property_size: Int,
   token_name: ByteArray,
+  policy_id: ByteArray,
 ) {
-  fn property_funds(_datum: Datum, redeemer: RedeemerPerson, ctx: ScriptContext) {
-    // let amount_nft = price / size
+  fn property_funds(
+    datum: DatumFunds,
+    redeemer: ReedemerFunds,
+    ctx: ScriptContext,
+  ) {
     let two_weeks = 2 * 7 * 24 * 60 * 60 * 1000
     let two_weeks_after = lock_until + two_weeks
 
@@ -98,48 +90,83 @@ validator(
     let ScriptContext { transaction, .. } = ctx
     let Transaction { inputs, outputs, .. } = transaction
 
-    when redeemer is {
-      RedemByManager -> True
-      RedemByInvestor -> True
+    when ctx.purpose is {
+      Spend(output_ref) ->
+        when redeemer is {
+          ReleaseTokens -> and {
+              must_be_signed_by(ctx.transaction, manager),
+              must_send_tokens(
+                inputs,
+                outputs,
+                token_price,
+                policy_id,
+                token_name,
+              ),
+            }
+          Refund -> must_be_signed_by_datum_investor(ctx.transaction, datum)
+        }
+
+      _ -> False
     }
-    // when ctx.purpose is {
-    //   Spend(_) -> or {
-    //       // must_be_signed_by_investor(ctx.transaction, datum),
-    //       must_be_signed_by(ctx.transaction, manager),
-    //       must_send_tokens(outputs),
-    //       and {
-    //         must_be_signed_by(ctx.transaction, manager),
-    //         must_send_tokens(outputs),
-    //       },
-    //     }
-    //   // and {
-    //   //   must_start_after(ctx.transaction.validity_range, lock_until),
-    //   //   must_be_funded(inputs, price),
-    //   // },
-    //   _ -> False
-    // }
   }
 }
 
-// fn inlineDatum(input: Input) -> PaymentCredential {
-//   let Input { output, .. } = input
-//   let Output { address, .. } = output
-//   address.payment_credential 
-// }
-
-fn must_send_tokens(ouputs: List<Output>) -> Bool {
-  // let Output { address, .. } = output
-  True
+fn must_be_signed_by_datum_investor(transaction: Transaction, datum: DatumFunds) {
+  expect Investor(credential, address) = datum
+  must_be_signed_by(transaction, address)
 }
 
-fn must_be_signed_by_investor(
-  transaction: Transaction,
-  datum: List<Investor>,
-) -> Bool {
-  let signatures =
-    list.map(datum, fn(x: Investor) -> VerificationKeyHash { x.signature })
+fn must_send_ada_back(inputs: List<Input>, outputs: List<Output>) {
+  let inputDatumLovelace: List<(Datum, Int)> = list.map(inputs, datumLovelace)
+  let outputDatumLovelace: List<(Datum, Int)> =
+    list.map(outputs, outputAddressLovelace)
 
-  list.all(signatures, fn(x) { must_be_signed_by(transaction, x) })
+  list.difference(inputDatumLovelace, outputDatumLovelace) == []
+}
+
+fn must_send_tokens(
+  inputs: List<Input>,
+  outputs: List<Output>,
+  token_price: Int,
+  policy_id: PolicyId,
+  token_name: AssetName,
+) -> Bool {
+  let inputDatumLovelace: List<(Datum, Int)> = list.map(inputs, datumLovelace)
+  let outputDatumTokens: List<(Address, Int)> =
+    list.map(outputs, fn(x) { outputAddressTokens(x, policy_id, token_name) })
+
+  let unpaidInputs =
+    list.foldr(
+      outputDatumTokens,
+      inputDatumLovelace,
+      fn(x, xs) { list.delete(xs, outputsToDatum(x, token_price)) },
+    )
+
+  unpaidInputs == []
+}
+
+fn datumLovelace(input: Input) {
+  let Input { output, .. } = input
+  let Output { datum, .. } = output
+  (datum, lovelace_of(output.value))
+}
+
+fn outputAddressLovelace(output: Output) {
+  let Output { address, .. } = output
+  (InlineDatum(address), lovelace_of(output.value))
+}
+
+fn outputAddressTokens(
+  output: Output,
+  policy_id: PolicyId,
+  asset_name: AssetName,
+) -> (Address, Int) {
+  let Output { address, .. } = output
+  (address, quantity_of(output.value, policy_id, asset_name))
+}
+
+fn outputsToDatum(x: (Address, Int), price: Int) {
+  (InlineDatum(x.1st), x.2nd * price)
 }
 
 fn must_be_signed_by(transaction: Transaction, vk: VerificationKeyHash) {
