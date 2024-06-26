@@ -33,7 +33,7 @@ function useLucid(blockfrost: string) {
 }
 
 export default function PlatformLock(props: AppProps) {
-  const [amount, setAmount] = useState<number>(100);
+  const [amount, setAmount] = useState<number>(10);
   const { lucid, setupLucid } = useLucid(props.blockfrost);
   const [waitingTx, setWaitingTx] = useState<boolean>(false);
   const [policyId, setPolicyId] = useState<string | undefined>(undefined);
@@ -48,35 +48,61 @@ export default function PlatformLock(props: AppProps) {
       setWaitingTx(true);
       const lovelace = Number(amount) * 1000000;
 
-      const investorPublicKeyHash = lucid.utils.getAddressDetails(
-        await lucid.wallet.address(),
-      ).paymentCredential.hash;
+      // const investorPublicKeyHash = lucid.utils.getAddressDetails(
+      //   await lucid.wallet.address(),
+      // ).paymentCredential.hash;
 
-      const Datum = Data.Object({
-        investor: String,
-      });
+      // const Datum = Data.Object({
+      //   investor: String,
+      // });
 
-      type Datum = Data.Static<typeof Datum>;
+      // type Datum = Data.Static<typeof Datum>;
 
-      const datum = Data.to<Datum>(
-        {
-          investor: fromText(investorPublicKeyHash),
-        },
-        Datum,
-      );
+      // const datum = Data.to<Datum>(
+      //   {
+      //     investor: fromText(investorPublicKeyHash),
+      //   },
+      //   Datum,
+      // );
 
-      const txLock = await lock(lovelace, {
-        into: props.bid.contract,
-        datum: datum,
-        lucid: lucid,
-      });
+      // const txLock = await lock(lovelace, {
+      //   into: props.bid.contract,
+      //   datum: datum,
+      //   lucid: lucid,
+      // });
 
-      await lucid.awaitTx(txLock);
+      const utxos = await lucid?.wallet.getUtxos()!;
+      const utxo = utxos[0];
 
-      console.log(`${lovelace} lovelace locked into the contract
+      const tx = await lucid!
+        .newTx()
+        .payToContract(
+          props.bid.contract.propertyScriptAddress,
+          {
+            inline: Data.void(),
+          },
+          { lovelace: BigInt(lovelace) },
+        )
+        .complete();
+
+      const txSigned = await tx.sign().complete();
+
+      const txHash = await txSigned.submit();
+
+      const success = await lucid!.awaitTx(txHash);
+
+      // await lucid.awaitTx(txLock);
+
+      setTimeout(() => {
+        setWaitingTx(false);
+
+        if (success) {
+          console.log(`${lovelace} lovelace locked into the contract
          Tx ID: ${txLock}
         Datum: ${datum}
       `);
+        }
+      }, 3000);
     } catch (error) {
       setWaitingTx(false);
       console.error("error", error);

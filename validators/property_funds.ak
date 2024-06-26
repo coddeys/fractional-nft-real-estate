@@ -2,6 +2,7 @@ use aiken/dict
 use aiken/hash.{Blake2b_224, Hash}
 use aiken/interval.{Finite}
 use aiken/list
+use aiken/math/rational
 use aiken/transaction.{
   Input, Output, OutputReference, ScriptContext, Spend, Transaction,
   ValidityRange,
@@ -74,6 +75,11 @@ validator(
   }
 }
 
+type RedeemerPerson {
+  RedemByManager
+  RedemByInvestor
+}
+
 validator(
   manager: VerificationKeyHash,
   lock_until: POSIXTime,
@@ -81,30 +87,37 @@ validator(
   property_size: Int,
   token_name: ByteArray,
 ) {
-  fn property_funds(_datum: Datum, redeemer: Redeemer, ctx: ScriptContext) {
+  fn property_funds(_datum: Datum, redeemer: RedeemerPerson, ctx: ScriptContext) {
     // let amount_nft = price / size
     let two_weeks = 2 * 7 * 24 * 60 * 60 * 1000
     let two_weeks_after = lock_until + two_weeks
 
+    expect Some(y) = rational.new(property_price, property_size)
+    let token_price = rational.floor(y)
+
     let ScriptContext { transaction, .. } = ctx
     let Transaction { inputs, outputs, .. } = transaction
 
-    when ctx.purpose is {
-      Spend(_) -> or {
-          // must_be_signed_by_investor(ctx.transaction, datum),
-          must_be_signed_by(ctx.transaction, manager),
-          must_send_tokens(outputs),
-          and {
-            must_be_signed_by(ctx.transaction, manager),
-            must_send_tokens(outputs),
-          },
-        }
-      // and {
-      //   must_start_after(ctx.transaction.validity_range, lock_until),
-      //   must_be_funded(inputs, price),
-      // },
-      _ -> False
+    when redeemer is {
+      RedemByManager -> True
+      RedemByInvestor -> True
     }
+    // when ctx.purpose is {
+    //   Spend(_) -> or {
+    //       // must_be_signed_by_investor(ctx.transaction, datum),
+    //       must_be_signed_by(ctx.transaction, manager),
+    //       must_send_tokens(outputs),
+    //       and {
+    //         must_be_signed_by(ctx.transaction, manager),
+    //         must_send_tokens(outputs),
+    //       },
+    //     }
+    //   // and {
+    //   //   must_start_after(ctx.transaction.validity_range, lock_until),
+    //   //   must_be_funded(inputs, price),
+    //   // },
+    //   _ -> False
+    // }
   }
 }
 
