@@ -1,13 +1,12 @@
 use aiken/dict
 use aiken/hash.{Blake2b_224, Hash}
-use aiken/interval.{Finite}
+// use aiken/interval.{Finite}
 use aiken/list
 use aiken/math/rational
 use aiken/transaction.{
-  Datum, InlineDatum, Input, Output, OutputReference, ScriptContext, Spend,
-  Transaction, ValidityRange,
+  Input, Output, OutputReference, ScriptContext, Spend, Transaction,
 } as tx
-use aiken/transaction/credential.{Address, VerificationKey}
+use aiken/transaction/credential.{VerificationKey}
 use aiken/transaction/value.{AssetName, PolicyId, lovelace_of, quantity_of}
 
 type Action {
@@ -90,18 +89,23 @@ validator(
     let ScriptContext { transaction, .. } = ctx
     let Transaction { inputs, outputs, .. } = transaction
 
+    let must_be_after = True
+
     when ctx.purpose is {
-      Spend(output_ref) ->
+      Spend(_) ->
         when redeemer is {
           ReleaseTokens -> and {
-              must_be_signed_by(ctx.transaction, manager),
-              must_send_tokens(
-                inputs,
-                outputs,
-                token_price,
-                policy_id,
-                token_name,
-              ),
+              must_be_after?,
+              and {
+                must_be_signed_by(ctx.transaction, manager),
+                must_send_tokens(
+                  inputs,
+                  outputs,
+                  token_price,
+                  policy_id,
+                  token_name,
+                ),
+              },
             }
           Refund -> must_be_signed_by_datum_investor(ctx.transaction, datum)
         }
@@ -112,16 +116,8 @@ validator(
 }
 
 fn must_be_signed_by_datum_investor(transaction: Transaction, datum: DatumFunds) {
-  expect Investor(credential, address) = datum
-  must_be_signed_by(transaction, address)
-}
-
-fn must_send_ada_back(inputs: List<Input>, outputs: List<Output>) {
-  let inputDatumLovelace: List<(Datum, Int)> = list.map(inputs, datumLovelace)
-  let outputDatumLovelace: List<(Datum, Int)> =
-    list.map(outputs, outputAddressLovelace)
-
-  list.difference(inputDatumLovelace, outputDatumLovelace) == []
+  expect Investor(credential, ..) = datum
+  must_be_signed_by(transaction, credential)
 }
 
 fn must_send_tokens(
@@ -131,8 +127,8 @@ fn must_send_tokens(
   policy_id: PolicyId,
   token_name: AssetName,
 ) -> Bool {
-  let inputDatumLovelace: List<(Datum, Int)> = list.map(inputs, datumLovelace)
-  let outputDatumTokens: List<(Address, Int)> =
+  let inputDatumLovelace: List<Int> = list.map(inputs, datumLovelace)
+  let outputDatumTokens: List<Int> =
     list.map(outputs, fn(x) { outputAddressTokens(x, policy_id, token_name) })
 
   let unpaidInputs =
@@ -147,47 +143,40 @@ fn must_send_tokens(
 
 fn datumLovelace(input: Input) {
   let Input { output, .. } = input
-  let Output { datum, .. } = output
-  (datum, lovelace_of(output.value))
-}
-
-fn outputAddressLovelace(output: Output) {
-  let Output { address, .. } = output
-  (InlineDatum(address), lovelace_of(output.value))
+  lovelace_of(output.value)
 }
 
 fn outputAddressTokens(
   output: Output,
   policy_id: PolicyId,
   asset_name: AssetName,
-) -> (Address, Int) {
-  let Output { address, .. } = output
-  (address, quantity_of(output.value, policy_id, asset_name))
+) {
+  quantity_of(output.value, policy_id, asset_name)
 }
 
-fn outputsToDatum(x: (Address, Int), price: Int) {
-  (InlineDatum(x.1st), x.2nd * price)
+fn outputsToDatum(x: Int, price: Int) {
+  expect Some(y) = rational.new(x, price)
+  rational.floor(y)
 }
 
 fn must_be_signed_by(transaction: Transaction, vk: VerificationKeyHash) {
   list.has(transaction.extra_signatories, vk)
 }
+// fn must_start_after(range: ValidityRange, lock_expiration_time: POSIXTime) {
+//   when range.lower_bound.bound_type is {
+//     Finite(tx_earliest_time) -> lock_expiration_time <= tx_earliest_time
+//     _ -> False
+//   }
+// }
 
-fn must_start_after(range: ValidityRange, lock_expiration_time: POSIXTime) {
-  when range.lower_bound.bound_type is {
-    Finite(tx_earliest_time) -> lock_expiration_time <= tx_earliest_time
-    _ -> False
-  }
-}
+// fn must_be_funded(inputs: List<Input>, price: Int) {
+//   list.foldl(
+//     inputs,
+//     0,
+//     fn(n, total) { lovelace_of(self: n.output.value) + total },
+//   ) > price
+// }
 
-fn must_be_funded(inputs: List<Input>, price: Int) {
-  list.foldl(
-    inputs,
-    0,
-    fn(n, total) { lovelace_of(self: n.output.value) + total },
-  ) > price
-}
-
-test must_start_after_succeed_when_lower_bound_is_after() {
-  must_start_after(interval.after(2), 1)
-}
+// test must_start_after_succeed_when_lower_bound_is_after() {
+//   must_start_after(interval.after(2), 1)
+// }
