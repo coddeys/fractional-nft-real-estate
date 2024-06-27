@@ -22,7 +22,7 @@ function Hero() {
             Take part in the EU real estate market by investing in fractional,
             tokenized ownership, powered by Cardano.
           </p>
-          <button className="btn btn-primary">Get Started</button>
+          <a href="/manager" className="btn btn-primary">Get Started</a>
         </div>
       </div>
     </div>
