@@ -13,10 +13,7 @@ interface Data {
 export const handler: Handlers<Data> = {
   async GET(_req, ctx) {
     const scriptAddress = ctx.params.id;
-    const kv = await Deno.openKv(
-      "https://api.deno.com/databases/824bd08c-5681-4772-947f-b1ef806f3747/connect",
-    );
-    // const kv = await Deno.openKv();
+    const kv = await Deno.openKv();
     const resp = await kv.get(["bid", scriptAddress]);
     const bid = resp.value;
     return ctx.render({ bid });

@@ -6,10 +6,11 @@ import { env } from "../../config.ts";
 
 export const handler: Handlers<Data> = {
   async GET(_req, ctx) {
-    const kv = await Deno.openKv(
-      "https://api.deno.com/databases/824bd08c-5681-4772-947f-b1ef806f3747/connect",
-    );
-    // const kv = await Deno.openKv();
+    // const kv = await Deno.openKv(
+    //   "https://api.deno.com/databases/824bd08c-5681-4772-947f-b1ef806f3747/connect",
+    // );
+
+    const kv = await Deno.openKv();
     const iter = await kv.list({ prefix: ["bid"] });
     // delete all
     // for await (const res of iter) kv.delete(res.key)
