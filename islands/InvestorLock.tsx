@@ -241,6 +241,7 @@ export default function PlatformLock(props: AppProps) {
         .newTx()
         .collectFrom(utxos, redeemerFunds)
         .attachSpendingValidator(props.bid.contract.propertyFunds)
+        .addSigner(await lucid.wallet.address())
         .complete();
 
       const txSigned = await tx.sign().complete();

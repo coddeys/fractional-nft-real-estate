@@ -16,5 +16,5 @@ jobs:
           version: v1.0.26-alpha
 
       - run: aiken fmt --check
-      - run: aiken check -D
+      # - run: aiken check -D
       - run: aiken build

@@ -107,7 +107,11 @@ validator(
                 ),
               },
             }
-          Refund -> must_be_signed_by_datum_investor(ctx.transaction, datum)
+          Refund ->
+            must_be_after? && must_be_signed_by_datum_investor(
+              ctx.transaction,
+              datum,
+            )
         }
 
       _ -> False
@@ -117,6 +121,7 @@ validator(
 
 fn must_be_signed_by_datum_investor(transaction: Transaction, datum: DatumFunds) {
   expect Investor(credential, ..) = datum
+  trace @"is_signed"
   must_be_signed_by(transaction, credential)
 }
 
