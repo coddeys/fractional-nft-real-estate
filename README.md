@@ -62,6 +62,7 @@ Visual guide:
 
 5. Click "Pay to Address."
 
+[scrnli_6_28_2024_1-06-27 AM.webm](https://github.com/coddeys/fractional-nft-real-estate/assets/4198294/ecd09c26-738f-464d-a7cf-e20db4b7f84e)
 
 ## Invest in the Property
 
@@ -74,3 +75,6 @@ Visual guide:
 2. Connect the Nami Wallet by clicking the "Setup Lucid" button
 
 5. Click "Invest now."
+
+[scrnli_6_28_2024_1-15-45 AM.webm](https://github.com/coddeys/fractional-nft-real-estate/assets/4198294/5f145ba9-99b3-4a31-8d1e-f504b5478299)
+
